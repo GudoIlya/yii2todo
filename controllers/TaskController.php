@@ -22,4 +22,19 @@ class TaskController extends Controller {
 
         return $this->render('index', ['tasks' => $tasks, 'pagination' => $pagination]);
     }
+
+    public function actionTasks() {
+        \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+        $query = Task::find();
+        $pagination = new Pagination([
+            'defaultPageSize' => 5,
+            'totalCount' => $query->count()
+        ]);
+
+        $tasks = $query->orderBy('title')
+            ->offset($pagination->offset)
+            ->limit($pagination->limit)
+            ->all();
+        return ['tasks' => $tasks];
+    }
 }
