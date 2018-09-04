@@ -70,6 +70,12 @@ $config = [
                 'RegistrationForm' => 'app\models\RegistrationForm'
             ],
         ],
+        'admin' => [
+            'class' => 'app\modules\admin\Module',
+        ],
+        'rates' => [
+            'class' => 'app\modules\rates\Module',
+        ],
     ],
     'params' => $params,
 ];
