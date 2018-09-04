@@ -42,6 +42,9 @@ AppAsset::register($this);
             ['label' => 'About', 'url' => ['/site/about']],
             ['label' => 'Contact', 'url' => ['/site/contact']],
             ['label' => 'Tasks', 'url' => ['/task/index']],
+            (isset(Yii::$app->user->identity) && Yii::$app->user->identity->isAdmin) ? (
+                    ['label' => 'AdminPanel', 'url' => ['/admin']]
+            ) : '',
             Yii::$app->user->isGuest ? (
                 ['label' => 'Login', 'url' => ['/user/security/login']]
             ) : (

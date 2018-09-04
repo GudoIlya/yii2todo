@@ -2,7 +2,10 @@
 
 namespace app\modules\admin\controllers;
 
+use Yii;
 use yii\web\Controller;
+use app\models\RateCategories;
+use app\models\RateCategoriesSearch;
 
 /**
  * Default controller for the `admin` module
@@ -15,6 +18,13 @@ class DefaultController extends Controller
      */
     public function actionIndex()
     {
-        return $this->render('index');
+        $rateCategoriesModel = new RateCategories();
+        $rateCategoriesSearchModel = new RateCategoriesSearch();
+        $rateCategoriesDataProvider = $rateCategoriesSearchModel->search(Yii::$app->request->queryParams);
+        return $this->render('index',[
+            'rateCategoriesModel' => $rateCategoriesModel,
+            'rateCategoriesDataProvider' => $rateCategoriesDataProvider,
+            'rateCategoriesSearchModel' => $rateCategoriesSearchModel
+        ]);
     }
 }
