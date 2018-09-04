@@ -20,7 +20,7 @@ $config = [
             'class' => 'yii\caching\FileCache',
         ],
         'user' => [
-            'identityClass' => 'dektrium\user\models\User',
+            'identityClass' => 'app\models\UserCustom',
             'enableAutoLogin' => true,
         ],
         'errorHandler' => [
@@ -43,6 +43,13 @@ $config = [
             ],
         ],
         'db' => $db,
+        'view' => [
+            'theme' => [
+                'pathMap' => [
+                    '@dektrium/user/views' => '@app/views/user'
+                ]
+            ]
+        ]
         /*
         'urlManager' => [
             'enablePrettyUrl' => true,
@@ -57,8 +64,12 @@ $config = [
             'class' => 'dektrium\user\Module',
             'enableConfirmation' => false,
             'enableUnconfirmedLogin' => true,
-            'admins' => ['igudov']
-        ]
+            'admins' => ['igudov'],
+            'modelMap' => [
+                'User' => 'app\models\UserCustom',
+                'RegistrationForm' => 'app\models\RegistrationForm'
+            ],
+        ],
     ],
     'params' => $params,
 ];
