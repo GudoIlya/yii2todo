@@ -76,6 +76,9 @@ $config = [
         'bills' => [
             'class' => 'app\modules\bills\Module'
         ],
+        'profile' => [
+            'class' => 'app\modules\profile\Module'
+        ],
     ],
     'params' => $params,
 ];

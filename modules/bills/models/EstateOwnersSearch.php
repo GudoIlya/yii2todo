@@ -19,7 +19,6 @@ class EstateOwnersSearch extends EstateOwners
     {
         return [
             [['id', 'user_id', 'estate_id'], 'integer'],
-            [['portion'], 'number'],
         ];
     }
 

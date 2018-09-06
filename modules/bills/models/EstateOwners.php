@@ -3,7 +3,7 @@
 namespace app\modules\bills\models;
 
 use Yii;
-use dektrium\user\models\User;
+use app\models\UserCustom as User;
 
 /**
  * This is the model class for table "estate_owners".
@@ -32,10 +32,9 @@ class EstateOwners extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['user_id', 'estate_id', 'portion'], 'required'],
+            [['user_id', 'estate_id'], 'required'],
             [['user_id', 'estate_id'], 'default', 'value' => null],
             [['user_id', 'estate_id'], 'integer'],
-            [['portion'], 'number'],
             [['estate_id'], 'exist', 'skipOnError' => true, 'targetClass' => Estate::className(), 'targetAttribute' => ['estate_id' => 'id']],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
         ];
@@ -49,8 +48,7 @@ class EstateOwners extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'user_id' => 'User ID',
-            'estate_id' => 'Estate ID',
-            'portion' => 'Portion',
+            'estate_id' => 'Estate ID'
         ];
     }
 
