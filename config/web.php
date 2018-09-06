@@ -73,8 +73,8 @@ $config = [
         'admin' => [
             'class' => 'app\modules\admin\Module',
         ],
-        'rates' => [
-            'class' => 'app\modules\rates\Module',
+        'bills' => [
+            'class' => 'app\modules\bills\Module'
         ],
     ],
     'params' => $params,

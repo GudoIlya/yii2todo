@@ -1,16 +1,16 @@
 <?php
 
-namespace app\modules\rates;
+namespace app\modules\bills;
 
 /**
- * rates module definition class
+ * bills module definition class
  */
 class Module extends \yii\base\Module
 {
     /**
      * {@inheritdoc}
      */
-    public $controllerNamespace = 'app\modules\rates\controllers';
+    public $controllerNamespace = 'app\modules\bills\controllers';
 
     /**
      * {@inheritdoc}

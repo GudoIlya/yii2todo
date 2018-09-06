@@ -1,11 +1,11 @@
 <?php
 
-namespace app\modules\rates\controllers;
+namespace app\modules\bills\controllers;
 
 use yii\web\Controller;
 
 /**
- * Default controller for the `rates` module
+ * Default controller for the `bills` module
  */
 class DefaultController extends Controller
 {
