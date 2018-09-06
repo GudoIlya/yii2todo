@@ -1,14 +1,14 @@
 <?php
 
-namespace app\models;
+namespace app\modules\bills\models;
 
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use app\models\RateCategories;
+use app\modules\bills\models\RateCategories;
 
 /**
- * RateCategoriesSearch represents the model behind the search form of `app\models\RateCategories`.
+ * RateCategoriesSearch represents the model behind the search form of `app\modules\bills\models\RateCategories`.
  */
 class RateCategoriesSearch extends RateCategories
 {
