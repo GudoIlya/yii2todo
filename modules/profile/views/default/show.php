@@ -13,13 +13,6 @@ $this->title = empty($profile->name) ? Html::encode($profile->user->username) : 
 $this->params['breadcrumbs'][] = 'Профиль пользователя '.$this->title;
 ?>
 <div class="row">
-    <?= Menu::widget([
-        'items' => [
-            ['label' => 'Добавить недвижимость', 'url' => ['/bills/estate/create']]
-        ]
-    ]);?>
-</div>
-<div class="row">
     <div class="col-xs-12 col-sm-6 col-md-6">
         <div class="row">
             <div class="col-sm-6 col-md-4">
@@ -59,10 +52,20 @@ $this->params['breadcrumbs'][] = 'Профиль пользователя '.$thi
 </div>
 <!-- Недвижимость пользователя -->
 <div class="row">
-    <h1>Список недвижимости</h1>
-    <p>
-        <?= ListView::widget([
-            'dataProvider' => $userEstatesDP
-        ]);?>
-    </p>
+    <div class="col-xs-12 col-sm-12 col-md-12">
+        <h1>Список недвижимости</h1>
+        <div class="row">
+            <?= Menu::widget([
+                'items' => [
+                    ['label' => 'Добавить недвижимость', 'url' => ['/profile/estate/create']]
+                ]
+            ]);?>
+        </div>
+        <p>
+            <?= ListView::widget([
+                    'itemView' => 'estate/_oneEstateItem',
+                'dataProvider' => $userEstatesDP
+            ]);?>
+        </p>
+    </div>
 </div>

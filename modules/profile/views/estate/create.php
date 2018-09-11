@@ -1,0 +1,22 @@
+<?php
+
+use yii\helpers\Html;
+
+
+/* @var $this yii\web\View */
+/* @var $model app\modules\bills\models\Estate */
+
+$this->title = 'Create Estate';
+$this->params['breadcrumbs'][] = ['label' => 'Профиль', 'url' => ['/profile']];
+$this->params['breadcrumbs'][] = $this->title;
+?>
+<div class="estate-create">
+
+    <h1><?= Html::encode($this->title) ?></h1>
+
+    <?= $this->render('_form', [
+        'estateModel' => $estateModel,
+        'estateOwnersModel' => $estateOwnersModel
+    ]) ?>
+
+</div>

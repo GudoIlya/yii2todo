@@ -1,6 +1,6 @@
 <?php
 
-namespace app\modules\bills\controllers;
+namespace app\modules\profile\controllers;
 
 use Yii;
 use yii\web\Controller;
@@ -78,7 +78,7 @@ class EstateController extends Controller
                 $estateOwners->user_id = Yii::$app->user->getId();
                 $estateOwners->estate_id = $estateModel->id;
                 $estateOwners->save(false);
-                return $this->redirect(['view', 'id' => $estateModel->id]);
+                return $this->redirect(['/profile']);
             }
         }
 
@@ -126,9 +126,9 @@ class EstateController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
+        EstateOwners::find()->where(['estate_id' => $id, 'user_id' => Yii::$app->user->identity->getId()])->one()->delete();
 
-        return $this->redirect(['index']);
+        return $this->redirect(['/profile']);
     }
 
     /**

@@ -23,6 +23,7 @@ class Estate extends \yii\db\ActiveRecord
     {
         $scenarios = parent::scenarios();
         $scenarios[self::CREATE_ESTATE] = ['title', 'space'];
+        $scenarios[self::UPDATE_ESTATE] = ['title', 'space'];
         return $scenarios;
     }
 
