@@ -15,6 +15,17 @@ use Yii;
  */
 class Estate extends \yii\db\ActiveRecord
 {
+
+    const CREATE_ESTATE = 'create';
+    const UPDATE_ESTATE = 'update';
+
+    public function scenarios()
+    {
+        $scenarios = parent::scenarios();
+        $scenarios[self::CREATE_ESTATE] = ['title', 'space'];
+        return $scenarios;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -43,8 +54,8 @@ class Estate extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'title' => 'Title',
-            'space' => 'Space',
+            'title' => 'Наименование недвижимости',
+            'space' => 'Площадь',
         ];
     }
 

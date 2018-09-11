@@ -3,12 +3,12 @@
 namespace app\modules\bills\controllers;
 
 use Yii;
-use app\modules\bills\models\Estate;
-use app\modules\bills\models\EstateSearch;
-use app\modules\bills\models\EstateOwners;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use app\modules\bills\models\Estate;
+use app\modules\bills\models\EstateSearch;
+use app\modules\bills\models\EstateOwners;
 
 /**
  * EstateController implements the CRUD actions for Estate model.
@@ -65,17 +65,26 @@ class EstateController extends Controller
      */
     public function actionCreate()
     {
-        $model = new Estate();
+        $estateModel = new Estate();
         $estateOwners = new EstateOwners();
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            $estateOwners->user_id = Yii::$app->user->getId();
-            $estateOwners->estate_id = $model->id;
-            $estateOwners->save();
-            return $this->redirect(['view', 'id' => $model->id]);
+        $estateModel->scenario = 'create';
+        $estateOwners->scenario = 'create';
+
+        if ($estateModel->load(Yii::$app->request->post()) && $estateOwners->load(Yii::$app->request->post())) {
+            $isValid = $estateModel->validate();
+            $isValid = $estateOwners->validate() && $isValid;
+            if($isValid) {
+                $estateModel->save(false);
+                $estateOwners->user_id = Yii::$app->user->getId();
+                $estateOwners->estate_id = $estateModel->id;
+                $estateOwners->save(false);
+                return $this->redirect(['view', 'id' => $estateModel->id]);
+            }
         }
 
         return $this->render('create', [
-            'model' => $model,
+            'estateModel' => $estateModel,
+            'estateOwnersModel' => $estateOwners
         ]);
     }
 

@@ -18,6 +18,10 @@ use app\models\UserCustom as User;
  */
 class EstateOwners extends \yii\db\ActiveRecord
 {
+
+    const SCENARIO_CREATE = 'create';
+    const SCENARIO_UPDATE = 'update';
+
     /**
      * {@inheritdoc}
      */
@@ -26,15 +30,24 @@ class EstateOwners extends \yii\db\ActiveRecord
         return 'estate_owners';
     }
 
+    public function scenarios()
+    {
+        $scenarios = parent::scenarios();
+        $scenarios[self::SCENARIO_CREATE] = ['portion'];
+        $scenarios[self::SCENARIO_UPDATE] = ['user_id', 'estate_id', 'portion'];
+        return $scenarios;
+    }
+
     /**
      * {@inheritdoc}
      */
     public function rules()
     {
         return [
-            [['user_id', 'estate_id'], 'required'],
+            [['user_id', 'estate_id', 'portion'], 'required'],
             [['user_id', 'estate_id'], 'default', 'value' => null],
             [['user_id', 'estate_id'], 'integer'],
+            [['portion'], 'number', 'max' => 1],
             [['estate_id'], 'exist', 'skipOnError' => true, 'targetClass' => Estate::className(), 'targetAttribute' => ['estate_id' => 'id']],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
         ];
@@ -48,7 +61,8 @@ class EstateOwners extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'user_id' => 'User ID',
-            'estate_id' => 'Estate ID'
+            'estate_id' => 'Estate ID',
+            'portion' => 'Доля собственника'
         ];
     }
 
