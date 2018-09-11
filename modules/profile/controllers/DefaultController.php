@@ -3,6 +3,7 @@
 namespace app\modules\profile\controllers;
 
 use yii\web\Controller;
+use yii\filters\AccessControl;
 use dektrium\user\controllers\ProfileController;
 
 /**
@@ -10,6 +11,19 @@ use dektrium\user\controllers\ProfileController;
  */
 class DefaultController extends ProfileController
 {
+
+    public function behaviors()
+    {
+        return [
+            'access' => [
+                    'class' => AccessControl::className(),
+                    'rules' => [
+                        ['allow' => true, 'roles' => ['@']],
+                    ],
+                ],
+            ];
+    }
+
     /**
      * Renders the index view for the module
      * @return string
@@ -25,13 +39,15 @@ class DefaultController extends ProfileController
         $profile = $this->finder->findProfileById($id);
         $userModel = $this->finder->findUserById($id);
         $userEstatesDP = $userModel->getEstates();
+        $userRatesDP = $userModel->getRates();
         if ($profile === null) {
             throw new NotFoundHttpException();
         }
 
         return $this->render('show', [
             'profile' => $profile,
-            'userEstatesDP' => $userEstatesDP
+            'userEstatesDP' => $userEstatesDP,
+            'userRatesDP' => $userRatesDP
         ]);
     }
 }

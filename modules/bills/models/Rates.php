@@ -53,10 +53,10 @@ class Rates extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'name' => 'Name',
-            'price' => 'Price',
-            'category_id' => 'Category ID',
-            'date_create' => 'Date Create',
+            'name' => 'Наименование тарифа',
+            'price' => 'Цена',
+            'category_id' => 'Категория тарифа',
+            'date_create' => 'Дата создания',
         ];
     }
 

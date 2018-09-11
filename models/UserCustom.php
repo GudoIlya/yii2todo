@@ -2,8 +2,9 @@
 namespace app\models;
 
 use \dektrium\user\models\User as BaseUser;
-use app\modules\bills\models\Estate;
 use yii\data\ActiveDataProvider;
+use app\modules\bills\models\Estate;
+use app\modules\bills\models\Rates;
 
 class UserCustom extends BaseUser{
 
@@ -31,6 +32,20 @@ class UserCustom extends BaseUser{
             'query' => $query,
             'pagination' => [
                 'pageSize' => 20,
+            ]
+        ]);
+        return $dataProvider;
+    }
+
+    /**
+     * Получить тарифы пользователя
+     */
+    public function getRates() {
+        $query = $this->hasMany(Rates::className(), ['id' => 'rate_id'])->viaTable('users_rates', ['user_id' => 'id']);
+        $dataProvider = new ActiveDataProvider([
+            'query' => $query,
+            'pagination' => [
+                'pageSize' => 20
             ]
         ]);
         return $dataProvider;

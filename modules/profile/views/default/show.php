@@ -69,3 +69,22 @@ $this->params['breadcrumbs'][] = 'Профиль пользователя '.$thi
         </p>
     </div>
 </div>
+<!-- Тарифы пользователя -->
+<div class="row">
+    <div class="col-xs-12 col-sm-12 col-md-12">
+        <h1>Список тарифов, заведенных пользователем</h1>
+        <div class="row">
+            <?= Menu::widget([
+                'items' => [
+                    ['label' => 'Добавить тариф', 'url' => ['/profile/rates/create']]
+                ]
+            ]);?>
+        </div>
+        <p>
+            <?= ListView::widget([
+                'itemView' => 'rates/_ratesItem',
+                'dataProvider' => $userRatesDP
+            ]);?>
+        </p>
+    </div>
+</div>
