@@ -32,11 +32,9 @@ class Resources extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['name', 'current_rate'], 'required'],
-            [['current_rate'], 'default', 'value' => null],
-            [['current_rate'], 'integer'],
+            [['name'], 'required'],
             [['name', 'description'], 'string', 'max' => 255],
-            [['current_rate'], 'exist', 'skipOnError' => true, 'targetClass' => Rates::className(), 'targetAttribute' => ['current_rate' => 'id']],
+            ['name', 'unique']
         ];
     }
 
@@ -47,9 +45,8 @@ class Resources extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'name' => 'Name',
-            'description' => 'Description',
-            'current_rate' => 'Current Rate',
+            'name' => 'Наименование ресурса',
+            'description' => 'Описание'
         ];
     }
 

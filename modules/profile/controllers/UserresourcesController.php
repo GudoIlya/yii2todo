@@ -2,21 +2,19 @@
 
 namespace app\modules\profile\controllers;
 
-use app\modules\bills\models\UsersServicesSearch;
+use app\modules\bills\models\UsersResources;
+use app\modules\bills\models\UsersResourcesSearch;
 use Yii;
+use app\modules\bills\models\UsersServices;
+use app\modules\bills\models\UsersServicesSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\AccessControl;
-use app\modules\bills\models\ServicesSearch;
-use app\modules\bills\models\Rates;
-use app\modules\bills\models\Services;
-use app\modules\bills\models\UsersServices;
-
 
 /**
- * ServicesController implements the CRUD actions for Services model.
+ * UsersServicesController implements the CRUD actions for UsersServices model.
  */
-class UserservicesController extends Controller
+class UserresourcesController extends Controller
 {
     /**
      * {@inheritdoc}
@@ -54,7 +52,7 @@ class UserservicesController extends Controller
     }
 
     /**
-     * Check if authenticated user is owner of the userservice
+     * Check if authenticated user is owner of the user resource
      * @return bool
      * @throws NotFoundHttpException
      */
@@ -63,12 +61,12 @@ class UserservicesController extends Controller
     }
 
     /**
-     * Lists all Services models.
+     * Lists all UsersServices models.
      * @return mixed
      */
     public function actionIndex()
     {
-        $searchModel = new UsersServicesSearch();
+        $searchModel = new UsersResourcesSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
@@ -78,7 +76,7 @@ class UserservicesController extends Controller
     }
 
     /**
-     * Displays a single Services model.
+     * Displays a single UsersServices model.
      * @param integer $id
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
@@ -91,33 +89,29 @@ class UserservicesController extends Controller
     }
 
     /**
-     * Creates a new Services model.
+     * Creates a new UsersServices model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
     public function actionCreate()
     {
-        $userServicesModel = new UsersServices();
-        $servicesItems = Services::find()
-            ->select(['name'])
-            ->indexBy('id')
-            ->column();
-        $ratesItems = $userServicesModel->getRatesOptions();
+        $model = new UsersResources();
+        $resourceItems = $model->getResourceOptions();
+        $rateItems = $model->getRatesOptions();
 
-        if ($userServicesModel->load(Yii::$app->request->post()) && $userServicesModel->save()) {
-            return $this->redirect(['view', 'id' => $userServicesModel->id]);
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            return $this->redirect(['view', 'id' => $model->id]);
         }
 
         return $this->render('create', [
-            'servicesItems' => $servicesItems,
-            'ratesItems' => $ratesItems,
-            'userServicesModel' => $userServicesModel
+            'model' => $model,
+            'resourceItems' => $resourceItems,
+            'rateItems' => $rateItems
         ]);
     }
 
-
     /**
-     * Updates an existing Services model.
+     * Updates an existing UsersServices model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
      * @return mixed
@@ -126,11 +120,8 @@ class UserservicesController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
-        $servicesItems = Services::find()
-            ->select(['name'])
-            ->indexBy('id')
-            ->column();
-        $ratesItems = $model->getRatesOptions();
+        $resourceItems = $model->getResourceOptions();
+        $rateItems = $model->getRatesOptions();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
@@ -138,13 +129,13 @@ class UserservicesController extends Controller
 
         return $this->render('update', [
             'model' => $model,
-            'servicesItems' => $servicesItems,
-            'ratesItems' => $ratesItems
+            'resourceItems' => $resourceItems,
+            'rateItems' => $rateItems
         ]);
     }
 
     /**
-     * Deletes an existing Services model.
+     * Deletes an existing UsersServices model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed
@@ -158,19 +149,18 @@ class UserservicesController extends Controller
     }
 
     /**
-     * Finds the Services model based on its primary key value.
+     * Finds the UsersServices model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
-     * @return Services the loaded model
+     * @return UsersServices the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = UsersServices::findOne($id)) !== null) {
+        if (($model = UsersResources::findOne($id)) !== null) {
             return $model;
         }
 
         throw new NotFoundHttpException('The requested page does not exist.');
     }
-
 }

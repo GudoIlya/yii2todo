@@ -3,7 +3,11 @@
 namespace app\modules\bills\models;
 
 use Yii;
+use yii\db\ActiveRecord;
+use yii\behaviors\TimestampBehavior;
+use yii\behaviors\BlameableBehavior;
 use dektrium\user\models\User;
+use app\modules\bills\models\Rates;
 
 /**
  * This is the model class for table "users_resources".
@@ -16,8 +20,29 @@ use dektrium\user\models\User;
  * @property Resources $resource
  * @property User $user
  */
-class UsersResources extends \yii\db\ActiveRecord
+class UsersResources extends ActiveRecord
 {
+
+    public function behaviors()
+    {
+        $behaviors = parent::behaviors();
+        $behaviors[] = [
+            'class' => TimestampBehavior::className(),
+            'createdAtAttribute' => 'date_create',
+            'updatedAtAttribute' => false,
+            'value' => function(){ return date('m.d.y'); },
+        ];
+        $behaviors[] = [
+            'class' => BlameableBehavior::className(),
+            'createdByAttribute' => 'user_id',
+            'updatedByAttribute' => false,
+            'attributes' => [
+                ActiveRecord::EVENT_BEFORE_VALIDATE => ['user_id']
+            ]
+        ];
+        return $behaviors;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -32,12 +57,13 @@ class UsersResources extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['resource_id', 'user_id', 'date_create'], 'required'],
+            [['resource_id', 'current_rate'], 'required'],
             [['resource_id', 'user_id'], 'default', 'value' => null],
             [['resource_id', 'user_id'], 'integer'],
-            [['date_create'], 'safe'],
+            [['resource_id','user_id'],'unique', 'targetAttribute' => ['user_id', 'resource_id']],
             [['resource_id'], 'exist', 'skipOnError' => true, 'targetClass' => Resources::className(), 'targetAttribute' => ['resource_id' => 'id']],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
+            [['current_rate'], 'exist', 'skipOnError' => true, 'targetClass' => Rates::className(), 'targetAttribute' => ['current_rate' => 'id']]
         ];
     }
 
@@ -48,8 +74,9 @@ class UsersResources extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'resource_id' => 'Resource ID',
+            'resource_id' => 'Ресурс',
             'user_id' => 'User ID',
+            'current_rate' => 'Действующий тариф',
             'date_create' => 'Date Create',
         ];
     }
@@ -62,11 +89,23 @@ class UsersResources extends \yii\db\ActiveRecord
         return $this->hasOne(Resources::className(), ['id' => 'resource_id']);
     }
 
+    public function getRate() {
+        return $this->hasOne(Rates::className(), ['id' => 'current_rate']);
+    }
+
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getUser()
     {
         return $this->hasOne(User::className(), ['id' => 'user_id']);
+    }
+
+    public function getResourceOptions() {
+        return Resources::find()->select(['name'])->indexBy('id')->column();
+    }
+
+    public function getRatesOptions() {
+        return Rates::find()->where(['user_id' => Yii::$app->user->identity->getId(), 'category_id' => 3])->select(['concat(name,\', ценой \', price) as name'])->indexBy('id')->column();
     }
 }

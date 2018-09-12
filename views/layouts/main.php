@@ -40,7 +40,12 @@ AppAsset::register($this);
         'items' => [
             ['label' => 'Home', 'url' => ['/site/index']],
             ['label' => 'About', 'url' => ['/site/about']],
-            ['label' => 'Profile', 'url' => ['/profile']],
+            ['label' => 'Profile',
+                'items' => [
+                        ['label' => 'Общая информация', 'url' => ['/profile']],
+                        ['label' => 'Ресурсы пользователя', 'url' => ['/profile/userresources']]
+                ]
+            ],
             ( isset(Yii::$app->user->identity) ? (['label' => 'Tasks', 'url' => ['/task/index']]) : '' ),
             (isset(Yii::$app->user->identity) && Yii::$app->user->identity->isAdmin) ? (
                     ['label' => 'AdminPanel', 'url' => ['/admin']]

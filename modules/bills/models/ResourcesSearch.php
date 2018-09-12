@@ -18,7 +18,7 @@ class ResourcesSearch extends Resources
     public function rules()
     {
         return [
-            [['id', 'current_rate'], 'integer'],
+            [['id'], 'integer'],
             [['name', 'description'], 'safe'],
         ];
     }
@@ -59,8 +59,7 @@ class ResourcesSearch extends Resources
 
         // grid filtering conditions
         $query->andFilterWhere([
-            'id' => $this->id,
-            'current_rate' => $this->current_rate,
+            'id' => $this->id
         ]);
 
         $query->andFilterWhere(['ilike', 'name', $this->name])

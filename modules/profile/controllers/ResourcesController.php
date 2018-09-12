@@ -2,21 +2,17 @@
 
 namespace app\modules\profile\controllers;
 
-use app\modules\bills\models\UsersServicesSearch;
 use Yii;
+use app\modules\bills\models\Resources;
+use app\modules\bills\models\ResourcesSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\AccessControl;
-use app\modules\bills\models\ServicesSearch;
-use app\modules\bills\models\Rates;
-use app\modules\bills\models\Services;
-use app\modules\bills\models\UsersServices;
-
 
 /**
- * ServicesController implements the CRUD actions for Services model.
+ * ResourcesController implements the CRUD actions for Resources model.
  */
-class UserservicesController extends Controller
+class ResourcesController extends Controller
 {
     /**
      * {@inheritdoc}
@@ -27,22 +23,12 @@ class UserservicesController extends Controller
             'access' => [
                 'class' => AccessControl::className(),
                 'rules' => [
-                    ['actions' => ['index', 'create'], 'allow' => true, 'roles' => ['@']],
-                    [
-                        'actions' => ['view'],
-                        'allow'  => true,
-                        'matchCallback' => function($rule, $action) {
-                            if( Yii::$app->user->identity->isAdmin || $this->isUserOwner() ) {
-                                return true;
-                            }
-                            return false;
-                        }
-                    ],
+                    ['actions' => ['index', 'create', 'view'], 'allow' => true, 'roles' => ['@']],
                     [
                         'actions' => ['update', 'delete'],
                         'allow'   => true,
                         'matchCallback' => function($rule, $action) {
-                            if( $this->isUserOwner() ) {
+                            if( Yii::$app->user->identity->isAdmin  ) {
                                 return true;
                             }
                             return false;
@@ -54,21 +40,12 @@ class UserservicesController extends Controller
     }
 
     /**
-     * Check if authenticated user is owner of the userservice
-     * @return bool
-     * @throws NotFoundHttpException
-     */
-    protected function isUserOwner() {
-        return $this->findModel(Yii::$app->request->get('id'))->user_id == Yii::$app->user->id;
-    }
-
-    /**
-     * Lists all Services models.
+     * Lists all Resources models.
      * @return mixed
      */
     public function actionIndex()
     {
-        $searchModel = new UsersServicesSearch();
+        $searchModel = new ResourcesSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
@@ -78,7 +55,7 @@ class UserservicesController extends Controller
     }
 
     /**
-     * Displays a single Services model.
+     * Displays a single Resources model.
      * @param integer $id
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
@@ -91,33 +68,25 @@ class UserservicesController extends Controller
     }
 
     /**
-     * Creates a new Services model.
+     * Creates a new Resources model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
     public function actionCreate()
     {
-        $userServicesModel = new UsersServices();
-        $servicesItems = Services::find()
-            ->select(['name'])
-            ->indexBy('id')
-            ->column();
-        $ratesItems = $userServicesModel->getRatesOptions();
+        $model = new Resources();
 
-        if ($userServicesModel->load(Yii::$app->request->post()) && $userServicesModel->save()) {
-            return $this->redirect(['view', 'id' => $userServicesModel->id]);
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            return $this->redirect(['view', 'id' => $model->id]);
         }
 
         return $this->render('create', [
-            'servicesItems' => $servicesItems,
-            'ratesItems' => $ratesItems,
-            'userServicesModel' => $userServicesModel
+            'model' => $model,
         ]);
     }
 
-
     /**
-     * Updates an existing Services model.
+     * Updates an existing Resources model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
      * @return mixed
@@ -126,11 +95,6 @@ class UserservicesController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
-        $servicesItems = Services::find()
-            ->select(['name'])
-            ->indexBy('id')
-            ->column();
-        $ratesItems = $model->getRatesOptions();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
@@ -138,13 +102,11 @@ class UserservicesController extends Controller
 
         return $this->render('update', [
             'model' => $model,
-            'servicesItems' => $servicesItems,
-            'ratesItems' => $ratesItems
         ]);
     }
 
     /**
-     * Deletes an existing Services model.
+     * Deletes an existing Resources model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed
@@ -158,19 +120,18 @@ class UserservicesController extends Controller
     }
 
     /**
-     * Finds the Services model based on its primary key value.
+     * Finds the Resources model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
-     * @return Services the loaded model
+     * @return Resources the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = UsersServices::findOne($id)) !== null) {
+        if (($model = Resources::findOne($id)) !== null) {
             return $model;
         }
 
         throw new NotFoundHttpException('The requested page does not exist.');
     }
-
 }

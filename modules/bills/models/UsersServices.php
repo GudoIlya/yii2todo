@@ -21,7 +21,7 @@ use app\modules\bills\models\Rates;
  * @property Services $service
  * @property User $user
  */
-class UsersServices extends \yii\db\ActiveRecord
+class UsersServices extends ActiveRecord
 {
 
     public function behaviors()
@@ -102,7 +102,8 @@ class UsersServices extends \yii\db\ActiveRecord
         return $this->hasOne(User::className(), ['id' => 'user_id']);
     }
 
+    // TODO: надо каким-то образом переделать этот момент и изменить тип тарифа на статичный, либо что-то еще
     public function getRatesOptions() {
-        return Rates::find()->where(['user_id' => Yii::$app->user->identity->getId()])->select(['concat(name,\', ценой \', price) as name'])->indexBy('id')->column();
+        return Rates::find()->where(['user_id' => Yii::$app->user->identity->getId(), 'category_id' => 1])->select(['concat(name,\', ценой \', price) as name'])->indexBy('id')->column();
     }
 }
