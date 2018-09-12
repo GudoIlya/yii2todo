@@ -41,7 +41,7 @@ class UserCustom extends BaseUser{
      * Получить тарифы пользователя
      */
     public function getRates() {
-        $query = $this->hasMany(Rates::className(), ['id' => 'rate_id'])->viaTable('users_rates', ['user_id' => 'id']);
+        $query = $this->hasMany(Rates::className(), ['user_id' => 'id']);
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
             'pagination' => [

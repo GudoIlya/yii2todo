@@ -3,14 +3,13 @@
 namespace app\modules\profile\controllers;
 
 use Yii;
+use yii\web\NotFoundHttpException;
+use yii\filters\AccessControl;
 use app\modules\bills\models\Rates;
 use app\modules\bills\models\RatesSearch;
-use yii\web\Controller;
-use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
-use yii\filters\AccessControl;
-use app\modules\bills\controllers\RatesController as RatesControllerBase;
+use app\modules\bills\models\UsersRates;
 use app\modules\bills\models\RateCategories;
+use app\modules\bills\controllers\RatesController as RatesControllerBase;
 
 /**
  * RatesController implements the CRUD actions for Rates model.
@@ -23,10 +22,39 @@ class RatesController extends RatesControllerBase
             'access' => [
                 'class' => AccessControl::className(),
                 'rules' => [
-                    ['allow' => true, 'roles' => ['@']],
+                    ['actions' => ['index', 'create'], 'allow' => true, 'roles' => ['@']],
+                    [
+                      'action' => ['view'],
+                      'allow'  => true,
+                      'matchCallback' => function($rule, $action) {
+                            if( Yii::$app->user->identity->isAdmin || $this->isRateOwner() ) {
+                                return true;
+                            }
+                            return false;
+                      }
+                    ],
+                    [
+                        'actions' => ['update', 'delete'],
+                        'allow'   => true,
+                        'matchCallback' => function($rule, $action) {
+                            if( $this->isRateOwner() ) {
+                                return true;
+                            }
+                            return false;
+                        }
+                    ]
                 ],
             ],
         ];
+    }
+
+    /**
+     * Check if authenticated user is owner of the rate
+     * @return bool
+     * @throws NotFoundHttpException
+     */
+    protected function isRateOwner() {
+        return $this->findModel(Yii::$app->request->get('id'))->user_id == Yii::$app->user->id;
     }
 
     /**
@@ -64,17 +92,17 @@ class RatesController extends RatesControllerBase
      */
     public function actionCreate()
     {
-        $model = new Rates();
+        $ratesModel= new Rates();
         $rateCategoriesItems = RateCategories::find()
             ->select(['name'])
             ->indexBy('id')
             ->column();
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        if ( $ratesModel->load(Yii::$app->request->post()) && $ratesModel->save() ) {
+            return $this->redirect(['view', 'id' => $ratesModel->id]);
         }
 
         return $this->render('create', [
-            'model' => $model,
+            'model' => $ratesModel,
             'rateCategoriesItems' => $rateCategoriesItems
         ]);
     }
@@ -89,13 +117,17 @@ class RatesController extends RatesControllerBase
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
-
+        $rateCategoriesItems = RateCategories::find()
+            ->select(['name'])
+            ->indexBy('id')
+            ->column();
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
         return $this->render('update', [
             'model' => $model,
+            'rateCategoriesItems' => $rateCategoriesItems
         ]);
     }
 

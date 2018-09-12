@@ -28,11 +28,14 @@ $this->params['breadcrumbs'][] = $this->title;
     <?= DetailView::widget([
         'model' => $model,
         'attributes' => [
-            'id',
             'name',
             'price',
             'category_id',
             'date_create',
+            [
+                    'label' => 'Владелец тарифа',
+                    'value' => $model->getUser()->one()->username
+            ]
         ],
     ]) ?>
 

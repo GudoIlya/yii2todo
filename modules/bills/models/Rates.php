@@ -2,7 +2,11 @@
 
 namespace app\modules\bills\models;
 
+use app\models\UserCustom;
 use Yii;
+use yii\behaviors\TimestampBehavior;
+use yii\behaviors\BlameableBehavior;
+use yii\db\ActiveRecord;
 
 /**
  * This is the model class for table "rates".
@@ -21,6 +25,27 @@ use Yii;
  */
 class Rates extends \yii\db\ActiveRecord
 {
+
+    public function behaviors()
+    {
+        $behaviors = parent::behaviors();
+        $behaviors[] = [
+            'class' => TimestampBehavior::className(),
+            'createdAtAttribute' => 'date_create',
+            'updatedAtAttribute' => false,
+            'value' => function(){ return date('m.d.y'); },
+        ];
+        $behaviors[] = [
+            'class' => BlameableBehavior::className(),
+            'createdByAttribute' => 'user_id',
+            'updatedByAttribute' => false,
+            'attributes' => [
+                ActiveRecord::EVENT_AFTER_VALIDATE => ['user_id']
+            ]
+        ];
+        return $behaviors;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -35,13 +60,13 @@ class Rates extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['name', 'price', 'category_id', 'date_create'], 'required'],
+            [['name', 'price', 'category_id'], 'required'],
             [['price'], 'number'],
             [['category_id'], 'default', 'value' => null],
             [['category_id'], 'integer'],
-            [['date_create'], 'safe'],
+            [['name', 'price', 'category_id'], 'safe'],
             [['name'], 'string', 'max' => 255],
-            [['name'], 'unique'],
+            [['name', 'user_id'], 'unique', 'targetAttribute' => ['name', 'user_id']],
             [['category_id'], 'exist', 'skipOnError' => true, 'targetClass' => RateCategories::className(), 'targetAttribute' => ['category_id' => 'id']],
         ];
     }
@@ -98,5 +123,9 @@ class Rates extends \yii\db\ActiveRecord
     public function getServices()
     {
         return $this->hasMany(Services::className(), ['current_rate' => 'id']);
+    }
+
+    public function getUser() {
+        return $this->hasOne(UserCustom::className(), ['id' => 'user_id']);
     }
 }

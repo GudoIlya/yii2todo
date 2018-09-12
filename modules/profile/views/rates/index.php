@@ -24,8 +24,12 @@ $this->params['breadcrumbs'][] = $this->title;
         'filterModel' => $searchModel,
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
-
-            'id',
+            [
+                    'label' => 'Владелец тарифа',
+                    'content' => function($data) {
+                        return $data->getUser()->one()->username;
+                    }
+            ],
             'name',
             'price',
             'category_id',
