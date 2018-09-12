@@ -40,6 +40,7 @@ class DefaultController extends ProfileController
         $userModel = $this->finder->findUserById($id);
         $userEstatesDP = $userModel->getEstates();
         $userRatesDP = $userModel->getRates();
+        $userServicesDP = $userModel->getUserServices();
         if ($profile === null) {
             throw new NotFoundHttpException();
         }
@@ -47,7 +48,8 @@ class DefaultController extends ProfileController
         return $this->render('show', [
             'profile' => $profile,
             'userEstatesDP' => $userEstatesDP,
-            'userRatesDP' => $userRatesDP
+            'userRatesDP' => $userRatesDP,
+            'userServicesDP' => $userServicesDP
         ]);
     }
 }

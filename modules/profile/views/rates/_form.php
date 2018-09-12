@@ -18,7 +18,7 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'category_id')->dropDownList([
         $rateCategoriesItems
-    ], ['promt' => 'Выберите категорию тарифа']) ?>
+    ], ['prompt' => 'Выберите категорию тарифа']) ?>
 
 
     <div class="form-group">

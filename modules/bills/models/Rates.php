@@ -109,23 +109,8 @@ class Rates extends \yii\db\ActiveRecord
         return $this->hasOne(RateCategories::className(), ['id' => 'category_id']);
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getResources()
-    {
-        return $this->hasMany(Resources::className(), ['current_rate' => 'id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getServices()
-    {
-        return $this->hasMany(Services::className(), ['current_rate' => 'id']);
-    }
-
     public function getUser() {
         return $this->hasOne(UserCustom::className(), ['id' => 'user_id']);
     }
+
 }

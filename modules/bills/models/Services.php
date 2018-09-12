@@ -8,7 +8,6 @@ use Yii;
  * This is the model class for table "services".
  *
  * @property int $id
- * @property int $current_rate
  * @property string $name
  * @property string $description
  *
@@ -32,11 +31,9 @@ class Services extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['current_rate', 'name'], 'required'],
-            [['current_rate'], 'default', 'value' => null],
-            [['current_rate'], 'integer'],
+            [['name'], 'required'],
             [['name', 'description'], 'string', 'max' => 255],
-            [['current_rate'], 'exist', 'skipOnError' => true, 'targetClass' => Rates::className(), 'targetAttribute' => ['current_rate' => 'id']],
+            ['name', 'unique']
         ];
     }
 
@@ -47,7 +44,6 @@ class Services extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'current_rate' => 'Current Rate',
             'name' => 'Name',
             'description' => 'Description',
         ];
@@ -61,13 +57,6 @@ class Services extends \yii\db\ActiveRecord
         return $this->hasMany(BillServices::className(), ['service_id' => 'id']);
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getCurrentRate()
-    {
-        return $this->hasOne(Rates::className(), ['id' => 'current_rate']);
-    }
 
     /**
      * @return \yii\db\ActiveQuery

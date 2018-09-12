@@ -2,42 +2,40 @@
 
 namespace app\modules\profile\controllers;
 
+use app\models\User;
+use dektrium\user\models\UserSearch;
 use Yii;
+use yii\web\Controller;
 use yii\web\NotFoundHttpException;
+use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
+use app\modules\bills\models\ServicesSearch;
 use app\modules\bills\models\Rates;
-use app\modules\bills\models\RatesSearch;
-use app\modules\bills\models\UsersRates;
-use app\modules\bills\models\RateCategories;
-use app\modules\bills\controllers\RatesController as RatesControllerBase;
+use app\modules\bills\models\Services;
+use app\modules\bills\models\UsersServices;
+use app\models\UserCustom;
+
 
 /**
- * RatesController implements the CRUD actions for Rates model.
+ * ServicesController implements the CRUD actions for Services model.
  */
-class RatesController extends RatesControllerBase
+class ServicesController extends Controller
 {
+    /**
+     * {@inheritdoc}
+     */
     public function behaviors()
     {
         return [
             'access' => [
                 'class' => AccessControl::className(),
                 'rules' => [
-                    ['actions' => ['index', 'create'], 'allow' => true, 'roles' => ['@']],
-                    [
-                      'actions' => ['view'],
-                      'allow'  => true,
-                      'matchCallback' => function($rule, $action) {
-                            if( Yii::$app->user->identity->isAdmin || $this->isRateOwner() ) {
-                                return true;
-                            }
-                            return false;
-                      }
-                    ],
+                    ['actions' => ['index', 'create', 'view'], 'allow' => true, 'roles' => ['@']],
                     [
                         'actions' => ['update', 'delete'],
                         'allow'   => true,
                         'matchCallback' => function($rule, $action) {
-                            if( $this->isRateOwner() ) {
+                            if( Yii::$app->user->identity->isAdmin  ) {
                                 return true;
                             }
                             return false;
@@ -53,17 +51,17 @@ class RatesController extends RatesControllerBase
      * @return bool
      * @throws NotFoundHttpException
      */
-    protected function isRateOwner() {
+    protected function isServiceOwner() {
         return $this->findModel(Yii::$app->request->get('id'))->user_id == Yii::$app->user->id;
     }
 
     /**
-     * Lists all Rates models.
+     * Lists all Services models.
      * @return mixed
      */
     public function actionIndex()
     {
-        $searchModel = new RatesSearch();
+        $searchModel = new ServicesSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
@@ -73,7 +71,7 @@ class RatesController extends RatesControllerBase
     }
 
     /**
-     * Displays a single Rates model.
+     * Displays a single Services model.
      * @param integer $id
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
@@ -86,29 +84,25 @@ class RatesController extends RatesControllerBase
     }
 
     /**
-     * Creates a new Rates model.
+     * Creates a new Services model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
     public function actionCreate()
     {
-        $ratesModel= new Rates();
-        $rateCategoriesItems = RateCategories::find()
-            ->select(['name'])
-            ->indexBy('id')
-            ->column();
-        if ( $ratesModel->load(Yii::$app->request->post()) && $ratesModel->save() ) {
-            return $this->redirect(['view', 'id' => $ratesModel->id]);
+        $servicesModel = new Services();
+
+        if ($servicesModel->load(Yii::$app->request->post()) && $servicesModel->save()) {
+            return $this->redirect(['view', 'id' => $servicesModel->id]);
         }
 
         return $this->render('create', [
-            'model' => $ratesModel,
-            'rateCategoriesItems' => $rateCategoriesItems
+            'servicesModel' => $servicesModel
         ]);
     }
 
     /**
-     * Updates an existing Rates model.
+     * Updates an existing Services model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
      * @return mixed
@@ -117,22 +111,18 @@ class RatesController extends RatesControllerBase
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
-        $rateCategoriesItems = RateCategories::find()
-            ->select(['name'])
-            ->indexBy('id')
-            ->column();
+
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
         return $this->render('update', [
-            'model' => $model,
-            'rateCategoriesItems' => $rateCategoriesItems
+            'servicesModel' => $model
         ]);
     }
 
     /**
-     * Deletes an existing Rates model.
+     * Deletes an existing Services model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed
@@ -145,4 +135,19 @@ class RatesController extends RatesControllerBase
         return $this->redirect(['index']);
     }
 
+    /**
+     * Finds the Services model based on its primary key value.
+     * If the model is not found, a 404 HTTP exception will be thrown.
+     * @param integer $id
+     * @return Services the loaded model
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    protected function findModel($id)
+    {
+        if (($model = Services::findOne($id)) !== null) {
+            return $model;
+        }
+
+        throw new NotFoundHttpException('The requested page does not exist.');
+    }
 }
