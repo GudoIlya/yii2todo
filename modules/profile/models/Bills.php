@@ -3,6 +3,10 @@
 namespace app\modules\profile\models;
 
 use Yii;
+use yii\db\ActiveRecord;
+use yii\behaviors\TimestampBehavior;
+use yii\behaviors\BlameableBehavior;
+use dektrium\user\models\User;
 
 /**
  * This is the model class for table "bills".
@@ -17,8 +21,32 @@ use Yii;
  * @property BillResources[] $billResources
  * @property BillServices[] $billServices
  */
-class Bills extends \yii\db\ActiveRecord
+class Bills extends ActiveRecord
 {
+
+    public $services_summ = 0;
+    public $resources_summ = 0;
+
+    public function behaviors()
+    {
+        $behaviors = parent::behaviors();
+        $behaviors[] = [
+            'class' => TimestampBehavior::className(),
+            'createdAtAttribute' => 'date',
+            'updatedAtAttribute' => false,
+            'value' => function(){ return date('d.m.y'); },
+        ];
+        $behaviors[] = [
+            'class' => BlameableBehavior::className(),
+            'createdByAttribute' => 'user_id',
+            'updatedByAttribute' => false,
+            'attributes' => [
+                ActiveRecord::EVENT_BEFORE_VALIDATE => ['user_id']
+            ]
+        ];
+        return $behaviors;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -33,12 +61,15 @@ class Bills extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['bill-number', 'date', 'services_summ', 'resources_summ'], 'required'],
+            [['bill_number', 'date', 'services_summ', 'resources_summ', 'user_id', 'estate_id'], 'required'],
             [['date'], 'safe'],
+            [['user_id', 'estate_id'], 'integer'],
             [['services_summ', 'resources_summ'], 'number'],
             [['is_paid'], 'boolean'],
-            [['bill-number'], 'string', 'max' => 255],
-            [['bill-number'], 'unique'],
+            [['bill_number'], 'string', 'max' => 255],
+            [['bill_number', 'user_id', 'estate_id'], 'unique', 'targetAttribute' => ['bill-number', 'user_id', 'estate_id']],
+            [['estate_id'], 'exist', 'skipOnError' => true, 'targetClass' => Estate::className(), 'targetAttribute' => ['estate_id' => 'id']],
+            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
         ];
     }
 
@@ -49,11 +80,13 @@ class Bills extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'bill-number' => 'Bill Number',
-            'date' => 'Date',
-            'services_summ' => 'Services Summ',
-            'resources_summ' => 'Resources Summ',
-            'is_paid' => 'Is Paid',
+            'bill_number' => 'Номер счета',
+            'date' => 'Дата создания',
+            'services_summ' => 'Сумма услуг',
+            'resources_summ' => 'Сумма ресурсов',
+            'is_paid' => 'Оплачен ли?',
+            'user_id' => 'Пользователь',
+            'estate_id' => 'Недвижимость'
         ];
     }
 

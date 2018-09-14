@@ -3,6 +3,7 @@
 namespace app\modules\profile\models;
 
 use Yii;
+use yii\db\ActiveRecord;
 use app\models\UserCustom as User;
 
 /**
@@ -16,7 +17,7 @@ use app\models\UserCustom as User;
  * @property Estate $estate
  * @property User $user
  */
-class EstateOwners extends \yii\db\ActiveRecord
+class EstateOwners extends ActiveRecord
 {
 
     const SCENARIO_CREATE = 'create';

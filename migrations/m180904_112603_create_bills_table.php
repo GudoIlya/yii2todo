@@ -14,7 +14,7 @@ class m180904_112603_create_bills_table extends Migration
     {
         $this->createTable('bills', [
             'id' => $this->primaryKey(),
-            'bill-number' => $this->string()->notNull()->unique(),
+            'bill_number' => $this->string()->notNull()->unique(),
             'date' => $this->date()->notNull(),
             'services_summ' => $this->float()->notNull(),
             'resources_summ' => $this->float()->notNull(),

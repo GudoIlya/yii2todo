@@ -22,7 +22,7 @@ $this->params['breadcrumbs'][] = $this->title;
     </ul>
     <div class="tab-content">
         <div id="bills" class="tab-pane fade">
-            <p><?= Html::a('Добавить Cчет', ['/profile/userbills/create', 'id' => $model->id], ['class' => 'btn btn-success']) ?></p>
+            <p><?= Html::a('Добавить Cчет', ['/profile/bills/create', 'estate_id' => $model->id], ['class' => 'btn btn-success']) ?></p>
         </div>
         <div id="services" class="tab-pane fade in active">
             <p><?= Html::a('Добавить услугу', ['/profile/userservices/create', 'estate_id' => $model->id], ['class' => 'btn btn-success']) ?></p>

@@ -10,7 +10,7 @@ use app\modules\profile\models\Bills;
 /**
  * BillSearch represents the model behind the search form of `app\modules\bills\models\Bills`.
  */
-class BillSearch extends Bills
+class BillsSearch extends Bills
 {
     /**
      * {@inheritdoc}
@@ -19,7 +19,7 @@ class BillSearch extends Bills
     {
         return [
             [['id'], 'integer'],
-            [['bill-number', 'date'], 'safe'],
+            [['bill_number', 'date'], 'safe'],
             [['services_summ', 'resources_summ'], 'number'],
             [['is_paid'], 'boolean'],
         ];
