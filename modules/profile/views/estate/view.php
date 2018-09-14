@@ -1,13 +1,13 @@
 <?php
 
 use yii\helpers\Html;
-use yii\widgets\DetailView;
+use yii\grid\GridView;
 
 /* @var $this yii\web\View */
-/* @var $model app\modules\bills\models\Estate */
+/* @var $model app\modules\profile\models\Estate */
 
 $this->title = $model->title;
-$this->params['breadcrumbs'][] = ['label' => 'Estates', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => 'Моя недвижимость', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="estate-view">
@@ -15,4 +15,118 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <?= $this->render('_oneEstateItem', ['model' => $model])?>
 
+    <ul class="nav nav-tabs">
+        <li><a data-toggle="tab" href="#bills">Счета</a></li>
+        <li class="active"><a data-toggle="tab" href="#services">Услуги</a></li>
+        <li><a data-toggle="tab" href="#resources">Ресурсы</a></li>
+    </ul>
+    <div class="tab-content">
+        <div id="bills" class="tab-pane fade">
+            <p><?= Html::a('Добавить Cчет', ['/profile/userbills/create', 'id' => $model->id], ['class' => 'btn btn-success']) ?></p>
+        </div>
+        <div id="services" class="tab-pane fade in active">
+            <p><?= Html::a('Добавить услугу', ['/profile/userservices/create', 'estate_id' => $model->id], ['class' => 'btn btn-success']) ?></p>
+            <?= GridView::widget([
+                'dataProvider' => $model->getEstateServices(),
+                'columns' => [
+                    ['class' => 'yii\grid\SerialColumn'],
+
+                    [
+                        'label' => 'Наименование',
+                        'content' => function($data) {
+                            $service = $data->getService()->one();
+                            return Html::a($service->name, [
+                                '/profile/userservices/view', 'id' => $data->id
+                            ]);
+                        }
+                    ],
+                    [
+                        'label' => 'Описание',
+                        'content' => function($data) {
+                            return $data->getService()->one()->description;
+                        }
+                    ],
+                    [
+                        'label' => 'Тариф',
+                        'content' => function($data) {
+                            $rate = $data->getRate()->one();
+                            return Html::a($rate->name, [
+                                    '/profile/rates/update', 'id' => $rate->id
+                            ]);
+                        }
+                    ],
+                    [
+                            'label' => 'Цена',
+                            'content' => function($data) {
+                                return $data->getRate()->one()->price;
+                            }
+                    ],
+
+                    ['class' => 'yii\grid\ActionColumn',
+                        'buttons' => [
+                                'view' => function($url, $model, $key) {return '';},
+                                'update' => function($url, $model, $key) {
+                                    return Html::a('<span class="glyphicon glyphicon-pencil"></span>',
+                                        ['/profile/userservices/update', 'id' => $model->id]
+                                    );
+                                },
+                                'delete' => function($url, $model, $key) {
+                                    return Html::a('<span class="glyphicon glyphicon-trash"></span>',
+                                        ['/profile/userservices/delete', 'id' => $model->id],
+                                            [
+                                                'data' => [
+                                                'confirm' => 'Вы уверены, что хотите удалить услугу?',
+                                                'method' => 'post',
+                                            ],
+                                        ]
+                                    );
+                                }
+                        ]
+                    ],
+                ],
+            ]); ?>
+        </div>
+        <div id="resources" class="tab-pane fade">
+            <p><?= Html::a('Добавить ресурс', ['/profile/userresources/create', 'estate_id' => $model->id], ['class' => 'btn btn-success']) ?></p>
+            <?= GridView::widget([
+                'dataProvider' => $model->getEstateResources(),
+                'columns' => [
+                    ['class' => 'yii\grid\SerialColumn'],
+
+                    [
+                        'label' => 'Наименование',
+                        'content' => function($data) {
+                            return $data->getResource()->one()->name;
+                        }
+                    ],
+                    [
+                        'label' => 'Описание',
+                        'content' => function($data) {
+                            return $data->getResource()->one()->description;
+                        }
+                    ],
+                    [
+                        'label' => 'Тариф',
+                        'content' => function($data) {
+                            return $data->getRate()->one()->name;
+                        }
+                    ],
+                    [
+                        'label' => 'Цена',
+                        'content' => function($data) {
+                            return $data->getRate()->one()->price;
+                        }
+                    ],
+
+                    ['class' => 'yii\grid\ActionColumn',
+                        'buttons' => [
+                            'update' => function($url, $model, $key) {
+                                return Html::a('<span class="glyphicon glyphicon-pencil"></span>', '/profile/services/update/'.$model->id);
+                            }
+                        ]
+                    ],
+                ],
+            ]); ?>
+        </div>
+    </div>
 </div>

@@ -43,7 +43,9 @@ AppAsset::register($this);
             ['label' => 'Profile',
                 'items' => [
                         ['label' => 'Общая информация', 'url' => ['/profile']],
-                        ['label' => 'Ресурсы пользователя', 'url' => ['/profile/userresources']]
+                        ['label' => 'Недвижимость пользователя', 'url' => ['/profile/estate']],
+                        ['label' => 'Ресурсы пользователя', 'url' => ['/profile/userresources']],
+                        ['label' => 'Услуги пользователя', 'url' => ['/profile/userservices']]
                 ]
             ],
             ( isset(Yii::$app->user->identity) ? (['label' => 'Tasks', 'url' => ['/task/index']]) : '' ),

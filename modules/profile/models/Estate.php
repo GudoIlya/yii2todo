@@ -3,7 +3,11 @@
 namespace app\modules\profile\models;
 
 use Yii;
+use yii\data\ActiveDataProvider;
 use app\models\UserCustom;
+use app\modules\profile\models\UsersServices;
+use app\modules\profile\models\UsersResources;
+use app\modules\profile\models\Rates;
 
 /**
  * This is the model class for table "estate".
@@ -70,6 +74,33 @@ class Estate extends \yii\db\ActiveRecord
     }
 
     public function getEstateOptions() {
-        return $this->find()->innerJoin('estate_owners', 'estate_id = estate.id AND user_id = '.UserCustom::getUserId())->select(['title'])->indexBy('id')->column();
+        return $this->find()
+            ->innerJoin('estate_owners', 'estate_id = estate.id AND user_id = '.UserCustom::getUserId())
+            ->select(['title'])
+            ->indexBy('id')
+            ->column();
+    }
+
+    public function getEstateServices() {
+        $query =  UsersServices::find()
+            ->andWHere('estate_id = '.$this->id)
+            ->andWhere('user_id = '.UserCustom::getUserId());
+
+        return new ActiveDataProvider([
+            'query' => $query
+        ]);
+    }
+
+    public function getEstateResources() {
+        $query =  UsersResources::find()
+            ->andWHere('estate_id = '.$this->id)
+            ->andWhere('user_id = '.UserCustom::getUserId());
+        return  new ActiveDataProvider([
+            'query' => $query,
+        ]);
+    }
+
+    public function getEstateBills() {
+        return true;
     }
 }

@@ -31,9 +31,9 @@ class UserCustom extends BaseUser{
     /**
      * Получить недвижимость пользователя
      */
-    public function getEstates() {
+    public function getEstates($params = false) {
         $query = $this->hasMany(Estate::className(), ['id' => 'estate_id'])->viaTable('estate_owners', ['user_id' => 'id']);
-        return $this->getDataProviderByQuery($query);
+        return $this->getDataProviderByQuery($query, $params);
     }
 
     /**

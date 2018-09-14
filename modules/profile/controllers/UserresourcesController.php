@@ -98,6 +98,7 @@ class UserresourcesController extends Controller
     public function actionCreate()
     {
         $model = new UsersResources();
+        $model->load(Yii::$app->request->get(), '');
         $estateModel = new Estate();
         $resourceItems = $model->getResourceOptions();
         $rateItems = $model->getRatesOptions();

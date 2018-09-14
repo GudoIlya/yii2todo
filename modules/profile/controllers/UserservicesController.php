@@ -101,6 +101,7 @@ class UserservicesController extends Controller
     public function actionCreate()
     {
         $userServicesModel = new UsersServices();
+        $userServicesModel->load(Yii::$app->request->get(),'');
         $userEstateModel = new Estate();
         $servicesItems = Services::find()
             ->select(['name'])

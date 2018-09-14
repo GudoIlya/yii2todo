@@ -6,6 +6,7 @@ use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use app\modules\profile\models\Estate;
+use app\models\UserCustom;
 
 /**
  * EstateSearch represents the model behind the search form of `app\modules\bills\models\Estate`.
@@ -41,7 +42,7 @@ class EstateSearch extends Estate
      */
     public function search($params)
     {
-        $query = Estate::find();
+        $query = Estate::find()->innerJoin('estate_owners', 'estate_id = estate.id AND user_id = '.UserCustom::getUserId());
 
         // add conditions that should always apply here
 
