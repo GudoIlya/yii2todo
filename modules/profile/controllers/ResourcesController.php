@@ -3,12 +3,12 @@
 namespace app\modules\profile\controllers;
 
 use Yii;
-use app\modules\bills\models\Resources;
-use app\modules\bills\models\ResourcesSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\AccessControl;
 
+use app\modules\profile\models\Resources;
+use app\modules\profile\models\ResourcesSearch;
 /**
  * ResourcesController implements the CRUD actions for Resources model.
  */

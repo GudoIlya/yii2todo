@@ -14,6 +14,9 @@ use yii\widgets\ActiveForm;
 
     <h3>Список уже имеющихся Услуг</h3>
 
+    <?= $form->field($userServicesModel, 'estate_id')->dropDownList([
+        $estateItems
+    ], ['prompt' => 'Для какой недвижимости ресурс?']); ?>
 
     <?= $form->field($userServicesModel, 'service_id')->dropDownList([
         $servicesItems

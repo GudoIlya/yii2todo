@@ -2,15 +2,17 @@
 
 namespace app\modules\profile\controllers;
 
-use app\modules\bills\models\UsersResources;
-use app\modules\bills\models\UsersResourcesSearch;
 use Yii;
-use app\modules\bills\models\UsersServices;
-use app\modules\bills\models\UsersServicesSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\AccessControl;
 
+use app\modules\profile\models\UsersResources;
+use app\modules\profile\models\UsersResourcesSearch;
+use app\modules\profile\models\UsersServices;
+use app\modules\profile\models\UsersServicesSearch;
+use app\models\UserCustom;
+use app\modules\profile\models\Estate;
 /**
  * UsersServicesController implements the CRUD actions for UsersServices model.
  */
@@ -96,8 +98,10 @@ class UserresourcesController extends Controller
     public function actionCreate()
     {
         $model = new UsersResources();
+        $estateModel = new Estate();
         $resourceItems = $model->getResourceOptions();
         $rateItems = $model->getRatesOptions();
+        $userEstatesList = $estateModel->getEstateOptions();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
@@ -106,7 +110,8 @@ class UserresourcesController extends Controller
         return $this->render('create', [
             'model' => $model,
             'resourceItems' => $resourceItems,
-            'rateItems' => $rateItems
+            'rateItems' => $rateItems,
+            'estateItems' => $userEstatesList
         ]);
     }
 
@@ -120,8 +125,10 @@ class UserresourcesController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
+        $estateModel = new Estate();
         $resourceItems = $model->getResourceOptions();
         $rateItems = $model->getRatesOptions();
+        $estateItems = $estateModel->getEstateOptions();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
@@ -130,7 +137,8 @@ class UserresourcesController extends Controller
         return $this->render('update', [
             'model' => $model,
             'resourceItems' => $resourceItems,
-            'rateItems' => $rateItems
+            'rateItems' => $rateItems,
+            'estateItems' => $estateItems
         ]);
     }
 

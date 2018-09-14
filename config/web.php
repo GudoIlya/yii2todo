@@ -1,86 +1,19 @@
 <?php
 
-$params = require __DIR__ . '/params.php';
 $db = require __DIR__ . '/db.php';
+$aliases = require  __DIR__ . '/aliases.php';
+$components = require __DIR__ . '/components.php';
+$modules = require __DIR__ . '/modules.php';
+$params = require __DIR__ . '/params.php';
 
 $config = [
     'id' => 'basic',
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
-    'aliases' => [
-        '@bower' => '@vendor/bower-asset',
-        '@npm'   => '@vendor/npm-asset',
-    ],
-    'components' => [
-        'request' => [
-            // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
-            'cookieValidationKey' => 'LTkjdu7-olqyu3QS1V0CC7cIMdtmvj7e',
-        ],
-        'cache' => [
-            'class' => 'yii\caching\FileCache',
-        ],
-        'user' => [
-            'identityClass' => 'app\models\UserCustom',
-            'enableAutoLogin' => true,
-        ],
-        'errorHandler' => [
-            'errorAction' => 'site/error',
-        ],
-        'mailer' => [
-            'class' => 'yii\swiftmailer\Mailer',
-            // send all mails to a file by default. You have to set
-            // 'useFileTransport' to false and configure a transport
-            // for the mailer to send real emails.
-            'useFileTransport' => true,
-        ],
-        'log' => [
-            'traceLevel' => YII_DEBUG ? 3 : 0,
-            'targets' => [
-                [
-                    'class' => 'yii\log\FileTarget',
-                    'levels' => ['error', 'warning'],
-                ],
-            ],
-        ],
-        'db' => $db,
-        'view' => [
-            'theme' => [
-                'pathMap' => [
-                    '@dektrium/user/views' => '@app/views/user'
-                ]
-            ]
-        ]
-        /*
-        'urlManager' => [
-            'enablePrettyUrl' => true,
-            'showScriptName' => false,
-            'rules' => [
-            ],
-        ],
-        */
-    ],
-    'modules' => [
-        'user' => [
-            'class' => 'dektrium\user\Module',
-            'enableConfirmation' => false,
-            'enableUnconfirmedLogin' => true,
-            'admins' => ['igudov'],
-            'modelMap' => [
-                'User' => 'app\models\UserCustom',
-                'RegistrationForm' => 'app\models\RegistrationForm'
-            ],
-        ],
-        'admin' => [
-            'class' => 'app\modules\admin\Module',
-        ],
-        'bills' => [
-            'class' => 'app\modules\bills\Module'
-        ],
-        'profile' => [
-            'class' => 'app\modules\profile\Module'
-        ],
-    ],
-    'params' => $params,
+    'aliases' => $aliases,
+    'components' => $components,
+    'modules' => $modules,
+    'params' => $params
 ];
 
 if (YII_ENV_DEV) {

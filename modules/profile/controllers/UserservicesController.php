@@ -2,15 +2,18 @@
 
 namespace app\modules\profile\controllers;
 
-use app\modules\bills\models\UsersServicesSearch;
+
 use Yii;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\AccessControl;
-use app\modules\bills\models\ServicesSearch;
-use app\modules\bills\models\Rates;
-use app\modules\bills\models\Services;
-use app\modules\bills\models\UsersServices;
+
+use app\modules\profile\models\ServicesSearch;
+use app\modules\profile\models\Rates;
+use app\modules\profile\models\Services;
+use app\modules\profile\models\UsersServices;
+use app\modules\profile\models\UsersServicesSearch;
+use app\modules\profile\models\Estate;
 
 
 /**
@@ -98,11 +101,13 @@ class UserservicesController extends Controller
     public function actionCreate()
     {
         $userServicesModel = new UsersServices();
+        $userEstateModel = new Estate();
         $servicesItems = Services::find()
             ->select(['name'])
             ->indexBy('id')
             ->column();
         $ratesItems = $userServicesModel->getRatesOptions();
+        $estateItems = $userEstateModel->getEstateOptions();
 
         if ($userServicesModel->load(Yii::$app->request->post()) && $userServicesModel->save()) {
             return $this->redirect(['view', 'id' => $userServicesModel->id]);
@@ -111,7 +116,8 @@ class UserservicesController extends Controller
         return $this->render('create', [
             'servicesItems' => $servicesItems,
             'ratesItems' => $ratesItems,
-            'userServicesModel' => $userServicesModel
+            'userServicesModel' => $userServicesModel,
+            'estateItems' => $estateItems
         ]);
     }
 
@@ -125,12 +131,15 @@ class UserservicesController extends Controller
      */
     public function actionUpdate($id)
     {
+
+        $estateModel = new Estate();
         $model = $this->findModel($id);
         $servicesItems = Services::find()
             ->select(['name'])
             ->indexBy('id')
             ->column();
         $ratesItems = $model->getRatesOptions();
+        $estateItems = $estateModel->getEstateOptions();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
@@ -139,7 +148,8 @@ class UserservicesController extends Controller
         return $this->render('update', [
             'model' => $model,
             'servicesItems' => $servicesItems,
-            'ratesItems' => $ratesItems
+            'ratesItems' => $ratesItems,
+            'estateItems' => $estateItems
         ]);
     }
 

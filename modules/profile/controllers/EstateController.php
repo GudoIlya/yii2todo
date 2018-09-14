@@ -6,9 +6,10 @@ use Yii;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
-use app\modules\bills\models\Estate;
-use app\modules\bills\models\EstateSearch;
-use app\modules\bills\models\EstateOwners;
+use yii\filters\AccessControl;
+use app\modules\profile\models\Estate;
+use app\modules\profile\models\EstateSearch;
+use app\modules\profile\models\EstateOwners;
 
 /**
  * EstateController implements the CRUD actions for Estate model.

@@ -12,10 +12,13 @@ use yii\widgets\ActiveForm;
 
     <?php $form = ActiveForm::begin(); ?>
 
+    <?= $form->field($model, 'estate_id')->dropDownList([
+            $estateItems
+    ], ['prompt' => 'Для какой недвижимости ресурс?']); ?>
 
     <?= $form->field($model, 'resource_id')->dropDownList([
         $resourceItems
-    ], ['prompt' => 'Существующую услугу']) ?>
+    ], ['prompt' => 'Выберете ресурс ...']) ?>
 
     <?= $form->field($model, 'current_rate')->dropDownList([
         $rateItems

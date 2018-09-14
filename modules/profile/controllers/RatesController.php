@@ -3,18 +3,19 @@
 namespace app\modules\profile\controllers;
 
 use Yii;
+use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\AccessControl;
-use app\modules\bills\models\Rates;
-use app\modules\bills\models\RatesSearch;
-use app\modules\bills\models\UsersRates;
-use app\modules\bills\models\RateCategories;
-use app\modules\bills\controllers\RatesController as RatesControllerBase;
+use app\modules\profile\models\Rates;
+use app\modules\profile\models\RatesSearch;
+use app\modules\profile\models\UsersRates;
+use app\modules\profile\models\RateCategories;
+use app\modules\profile\controllers\RatesController as RatesControllerBase;
 
 /**
  * RatesController implements the CRUD actions for Rates model.
  */
-class RatesController extends RatesControllerBase
+class RatesController extends Controller
 {
     public function behaviors()
     {
@@ -143,6 +144,22 @@ class RatesController extends RatesControllerBase
         $this->findModel($id)->delete();
 
         return $this->redirect(['index']);
+    }
+
+    /**
+     * Finds the Rates model based on its primary key value.
+     * If the model is not found, a 404 HTTP exception will be thrown.
+     * @param integer $id
+     * @return Rates the loaded model
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    protected function findModel($id)
+    {
+        if (($model = Rates::findOne($id)) !== null) {
+            return $model;
+        }
+
+        throw new NotFoundHttpException('The requested page does not exist.');
     }
 
 }

@@ -1,6 +1,7 @@
 <?php
 namespace app\models;
 
+use Yii;
 use \dektrium\user\models\User as BaseUser;
 use yii\data\ActiveDataProvider;
 use yii\db\ActiveRecord;
@@ -65,5 +66,14 @@ class UserCustom extends BaseUser{
             ];
         }
         return new ActiveDataProvider($dpConfig);
+    }
+
+    public static function getUserId() {
+        return Yii::$app->user->identity->getId();
+    }
+
+    public static function getUser() {
+        $loggedInUser = Yii::$app->user->identity;
+        return $loggedInUser;
     }
 }

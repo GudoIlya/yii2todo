@@ -12,7 +12,7 @@ class m180912_075648_drop_rate_name_contraint extends Migration
      */
     public function safeUp()
     {
-        $this->execute("ALTER TABLE rates DROP CONSTRAINT rate_name_key");
+        $this->execute("ALTER TABLE rates DROP CONSTRAINT IF EXISTS rates_name_key");
     }
 
     /**
