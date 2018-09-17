@@ -19,14 +19,7 @@ class m180917_121331_create_jkh_product_table extends Migration
             'product_type_id' => $this->integer()->notNull()
         ]);
 
-        $this->addForeignKey(
-          'fk-jkh-product-product-type-id',
-          'jkh_product',
-          'product_type_id',
-          'jkh_product_type',
-          'id',
-          'CASCADE'
-        );
+
     }
 
     /**
@@ -34,7 +27,6 @@ class m180917_121331_create_jkh_product_table extends Migration
      */
     public function safeDown()
     {
-        $this->dropForeignKey('fk-jkh-product-product-type-id', 'jkh_product');
         $this->dropTable('jkh_product');
     }
 }
