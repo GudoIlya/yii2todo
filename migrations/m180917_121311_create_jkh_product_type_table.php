@@ -21,7 +21,7 @@ class m180917_121311_create_jkh_product_type_table extends Migration
 
         $this->execute("
             INSERT INTO {$tableName} (name, description)
-            VALUES ( 'Услуги', '')
+            VALUES ( 'Услуги', ''),
                    ( 'Ресурсы', '');
         ");
 
