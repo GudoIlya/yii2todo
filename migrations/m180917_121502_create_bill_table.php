@@ -17,7 +17,10 @@ class m180917_121502_create_bill_table extends Migration
             'billnumber' => $this->string(100)->notNull()->unique(),
             'total' => $this->float()->defaultValue(0),
             'estate_id' => $this->integer()->notNull(),
-            'is_paid' => $this->boolean()->defaultValue(false)
+            'is_paid' => $this->boolean()->defaultValue(false),
+            'date_pay' => $this->dateTime()->null(),
+            'date_paid' => $this->dateTime()->null(),
+            'date_create' => $this->dateTime()->notNull()
             ]);
         $this->addForeignKey(
             'fk-bill-estate-id',
