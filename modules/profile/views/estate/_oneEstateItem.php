@@ -16,7 +16,8 @@ use yii\widgets\DetailView;
 <?= DetailView::widget([
     'model' => $model,
     'attributes' => [
-        'title',
+        'name',
         'space',
+        'user_portion'
     ],
 ]) ?>

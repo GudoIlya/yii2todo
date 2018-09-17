@@ -3,11 +3,12 @@
 namespace app\modules\profile\models;
 
 use Yii;
+use yii\db\ActiveRecord;
 use yii\data\ActiveDataProvider;
 use app\models\UserCustom;
-use app\modules\profile\models\UsersServices;
-use app\modules\profile\models\UsersResources;
+use app\modules\profile\models\EstateProduct;
 use app\modules\profile\models\Rates;
+use yii\behaviors\BlameableBehavior;
 
 /**
  * This is the model class for table "estate".
@@ -18,7 +19,7 @@ use app\modules\profile\models\Rates;
  *
  * @property EstateOwners[] $estateOwners
  */
-class Estate extends \yii\db\ActiveRecord
+class Estate extends ActiveRecord
 {
 
     const CREATE_ESTATE = 'create';
@@ -27,9 +28,23 @@ class Estate extends \yii\db\ActiveRecord
     public function scenarios()
     {
         $scenarios = parent::scenarios();
-        $scenarios[self::CREATE_ESTATE] = ['title', 'space'];
-        $scenarios[self::UPDATE_ESTATE] = ['title', 'space'];
+        $scenarios[self::CREATE_ESTATE] = ['name', 'space', 'portion'];
+        $scenarios[self::UPDATE_ESTATE] = ['name', 'space', 'portion'];
         return $scenarios;
+    }
+
+    public function behaviors()
+    {
+        $behaviors = parent::behaviors();
+        $behaviors[] = [
+            'class' => BlameableBehavior::className(),
+            'createdByAttribute' => 'user_id',
+            'updatedByAttribute' => false,
+            'attributes' => [
+                ActiveRecord::EVENT_BEFORE_VALIDATE => ['user_id']
+            ]
+        ];
+        return $behaviors;
     }
 
     /**
@@ -46,10 +61,12 @@ class Estate extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['title', 'space'], 'required'],
+            [['name', 'space', 'user_portion'], 'required'],
             [['space'], 'default', 'value' => null],
-            [['space'], 'integer'],
-            [['title'], 'string', 'max' => 255],
+            [['space'], 'string', 'max' => 50],
+            [['name'], 'string', 'max' => 255],
+            [['name', 'user_id'], 'unique', 'targetAttribute' => ['name', 'user_id']],
+            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => UserCustom::className(), 'targetAttribute' => ['user_id' => 'id']],
         ];
     }
 
@@ -60,43 +77,21 @@ class Estate extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'title' => 'Наименование недвижимости',
+            'name' => 'Наименование недвижимости',
+            'description' => 'Описание',
             'space' => 'Площадь',
+            'user_portion' => 'Доля владения'
         ];
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getEstateOwners()
-    {
-        return $this->hasMany(EstateOwners::className(), ['estate_id' => 'id']);
-    }
 
-    public function getEstateOptions() {
-        return $this->find()
-            ->innerJoin('estate_owners', 'estate_id = estate.id AND user_id = '.UserCustom::getUserId())
-            ->select(['title'])
-            ->indexBy('id')
-            ->column();
-    }
-
-    public function getEstateServices() {
-        $query =  UsersServices::find()
-            ->andWHere('estate_id = '.$this->id)
-            ->andWhere('user_id = '.UserCustom::getUserId());
+    public function getEstateProducts($productType) {
+        $query =  Jkhproduct::find()
+            ->innerJoin('estate_product ep', 'ep.estate_id = '.$this->id.' AND ep.product_id = jkh_product.id' )
+            ->andWHere('jkh_product.product_type = '.$productType);
 
         return new ActiveDataProvider([
             'query' => $query
-        ]);
-    }
-
-    public function getEstateResources() {
-        $query =  UsersResources::find()
-            ->andWHere('estate_id = '.$this->id)
-            ->andWhere('user_id = '.UserCustom::getUserId());
-        return  new ActiveDataProvider([
-            'query' => $query,
         ]);
     }
 

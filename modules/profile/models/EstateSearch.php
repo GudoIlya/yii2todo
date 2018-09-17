@@ -20,7 +20,7 @@ class EstateSearch extends Estate
     {
         return [
             [['id', 'space'], 'integer'],
-            [['title'], 'safe'],
+            [['name'], 'safe'],
         ];
     }
 
@@ -42,7 +42,7 @@ class EstateSearch extends Estate
      */
     public function search($params)
     {
-        $query = Estate::find()->innerJoin('estate_owners', 'estate_id = estate.id AND user_id = '.UserCustom::getUserId());
+        $query = Estate::find()->where('user_id = '.UserCustom::getUserId());
 
         // add conditions that should always apply here
 
@@ -64,7 +64,7 @@ class EstateSearch extends Estate
             'space' => $this->space,
         ]);
 
-        $query->andFilterWhere(['ilike', 'title', $this->title]);
+        $query->andFilterWhere(['ilike', 'name', $this->name]);
 
         return $dataProvider;
     }

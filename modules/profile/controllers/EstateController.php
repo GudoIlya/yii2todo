@@ -9,32 +9,51 @@ use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
 use app\modules\profile\models\Estate;
 use app\modules\profile\models\EstateSearch;
-use app\modules\profile\models\EstateOwners;
 
 /**
  * EstateController implements the CRUD actions for Estate model.
  */
 class EstateController extends Controller
 {
-    /**
-     * {@inheritdoc}
-     */
     public function behaviors()
     {
         return [
             'access' => [
                 'class' => AccessControl::className(),
                 'rules' => [
-                    ['allow' => true, 'roles' => ['@']],
-                ],
-            ],
-            'verbs' => [
-                'class' => VerbFilter::className(),
-                'actions' => [
-                    'delete' => ['POST'],
+                    ['actions' => ['index', 'create'], 'allow' => true, 'roles' => ['@']],
+                    [
+                        'actions' => ['view'],
+                        'allow'  => true,
+                        'matchCallback' => function($rule, $action) {
+                            if( Yii::$app->user->identity->isAdmin || $this->isOwner() ) {
+                                return true;
+                            }
+                            return false;
+                        }
+                    ],
+                    [
+                        'actions' => ['update', 'delete'],
+                        'allow'   => true,
+                        'matchCallback' => function($rule, $action) {
+                            if( $this->isOwner() ) {
+                                return true;
+                            }
+                            return false;
+                        }
+                    ]
                 ],
             ],
         ];
+    }
+
+    /**
+     * Check if authenticated user is owner of the rate
+     * @return bool
+     * @throws NotFoundHttpException
+     */
+    protected function isOwner() {
+        return $this->findModel(Yii::$app->request->get('id'))->user_id == Yii::$app->user->id;
     }
 
     /**
@@ -73,25 +92,13 @@ class EstateController extends Controller
     public function actionCreate()
     {
         $estateModel = new Estate();
-        $estateOwners = new EstateOwners();
-        $estateModel->scenario = 'create';
-        $estateOwners->scenario = 'create';
 
-        if ($estateModel->load(Yii::$app->request->post()) && $estateOwners->load(Yii::$app->request->post())) {
-            $isValid = $estateModel->validate();
-            $isValid = $estateOwners->validate() && $isValid;
-            if($isValid) {
-                $estateModel->save(false);
-                $estateOwners->user_id = Yii::$app->user->getId();
-                $estateOwners->estate_id = $estateModel->id;
-                $estateOwners->save(false);
-                return $this->redirect(['/profile']);
-            }
+        if ($estateModel->load(Yii::$app->request->post()) && $estateModel->save()) {
+                return $this->redirect(['/profile/estate']);
         }
 
         return $this->render('create', [
-            'estateModel' => $estateModel,
-            'estateOwnersModel' => $estateOwners
+            'estateModel' => $estateModel
         ]);
     }
 
@@ -105,22 +112,13 @@ class EstateController extends Controller
     public function actionUpdate($id)
     {
         $estateModel = $this->findModel($id);
-        $estateOwnersModel = EstateOwners::find()->where(['estate_id' => $estateModel->id, 'user_id' => Yii::$app->user->identity->getId()])->one();
-        $estateModel->scenario = 'update';
-        $estateOwnersModel->scenario = 'update';
-        if ($estateModel->load(Yii::$app->request->post()) && $estateOwnersModel->load(Yii::$app->request->post())) {
-            $isValid = $estateModel->validate();
-            $isValid = $estateOwnersModel->validate() && $isValid;
-            if($isValid) {
-                $estateModel->save(false);
-                $estateOwnersModel->save(false);
-                return $this->redirect(['view', 'id' => $estateModel->id]);
-            }
+
+        if ($estateModel->load(Yii::$app->request->post()) && $estateModel->save()) {
+            return $this->redirect(['view', 'id' => $estateModel->id]);
         }
 
         return $this->render('update', [
             'estateModel' => $estateModel,
-            'estateOwnersModel' => $estateOwnersModel
         ]);
     }
 

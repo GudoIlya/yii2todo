@@ -13,7 +13,8 @@ $config = [
     'aliases' => $aliases,
     'components' => $components,
     'modules' => $modules,
-    'params' => $params
+    'params' => $params,
+    'defaultRoute' => '/profile/estate'
 ];
 
 if (YII_ENV_DEV) {

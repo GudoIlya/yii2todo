@@ -26,9 +26,9 @@ $this->params['breadcrumbs'][] = $this->title;
             ['class' => 'yii\grid\SerialColumn'],
 
             [
-                    'attribute' => 'title',
+                    'attribute' => 'name',
                     'content' => function($data) {
-                        return Html::a($data->title, ['/profile/estate/view', 'id' => $data->id]);
+                        return Html::a($data->name, ['/profile/estate/view', 'id' => $data->id]);
                     }
             ],
             'space',

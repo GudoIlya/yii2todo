@@ -16,6 +16,7 @@ class m180917_121354_create_estate_table extends Migration
             'id' => $this->primaryKey(),
             'name' => $this->string(200)->notNull(),
             'description' => $this->string(500)->null(),
+            'space' => $this->string(50)->notNull(),
             'user_id' => $this->integer()->notNull(),
             'user_portion' => $this->float()->notNull()->defaultValue(1)
         ]);

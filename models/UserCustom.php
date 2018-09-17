@@ -32,28 +32,19 @@ class UserCustom extends BaseUser{
      * Получить недвижимость пользователя
      */
     public function getEstates($params = false) {
-        $query = $this->hasMany(Estate::className(), ['id' => 'estate_id'])->viaTable('estate_owners', ['user_id' => 'id']);
+        $query = $this->hasMany(Estate::className(), ['user_id' => 'id']);
         return $this->getDataProviderByQuery($query, $params);
     }
 
-    /**
-     * Get DP for services owned by user
-     */
-    public function getUserServices() {
-        $query = $this->hasMany(UsersServices::className(), ['user_id' => 'id']);
-        return $this->getDataProviderByQuery($query);
+
+    public function getRates($params = false) {
+        $query = $this->hasMany(Estate::className(), ['user_id' => 'id']);
+        return $this->getDataProviderByQuery($query, $params);
     }
 
-    /**
-     * Получить тарифы пользователя dp
-     */
-    public function getRates() {
-        $query = $this->hasMany(Rates::className(), ['user_id' => 'id']);
-        return $this->getDataProviderByQuery($query);
-    }
-
-    public function getUserRates() {
-        return $this->hasMany(Rates::className(), ['user_id' => 'id']);
+    public function getUserServices($params = false) {
+        $query = $this->hasMany(Estate::className(), ['user_id' => 'id']);
+        return $this->getDataProviderByQuery($query, $params);
     }
 
     public function getDataProviderByQuery($query, $params = false) {

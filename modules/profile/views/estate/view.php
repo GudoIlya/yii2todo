@@ -6,7 +6,7 @@ use yii\grid\GridView;
 /* @var $this yii\web\View */
 /* @var $model app\modules\profile\models\Estate */
 
-$this->title = $model->title;
+$this->title = $model->name;
 $this->params['breadcrumbs'][] = ['label' => 'Моя недвижимость', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
@@ -25,9 +25,9 @@ $this->params['breadcrumbs'][] = $this->title;
             <p><?= Html::a('Добавить Cчет', ['/profile/bills/create', 'estate_id' => $model->id], ['class' => 'btn btn-success']) ?></p>
         </div>
         <div id="services" class="tab-pane fade in active">
-            <p><?= Html::a('Добавить услугу', ['/profile/userservices/create', 'estate_id' => $model->id], ['class' => 'btn btn-success']) ?></p>
+            <p><?= Html::a('Добавить услугу', ['/profile/jkhproduct/create', 'estate_id' => $model->id, 'poduct_type' => \app\modules\profile\models\Jkhproduct::servicesId], ['class' => 'btn btn-success']) ?></p>
             <?= GridView::widget([
-                'dataProvider' => $model->getEstateServices(),
+                'dataProvider' => $model->getEstateProducts(\app\modules\profile\models\Jkhproduct::servicesId),
                 'columns' => [
                     ['class' => 'yii\grid\SerialColumn'],
 
@@ -87,9 +87,9 @@ $this->params['breadcrumbs'][] = $this->title;
             ]); ?>
         </div>
         <div id="resources" class="tab-pane fade">
-            <p><?= Html::a('Добавить ресурс', ['/profile/userresources/create', 'estate_id' => $model->id], ['class' => 'btn btn-success']) ?></p>
+            <p><?= Html::a('Добавить ресурс', ['/profile/jkhproduct/create', 'estate_id' => $model->id, 'poduct_type' => \app\modules\profile\models\Jkhproduct::resourcesId], ['class' => 'btn btn-success']) ?></p>
             <?= GridView::widget([
-                'dataProvider' => $model->getEstateResources(),
+                'dataProvider' => $model->getEstateProducts(\app\modules\profile\models\Jkhproduct::resourcesId),
                 'columns' => [
                     ['class' => 'yii\grid\SerialColumn'],
 
