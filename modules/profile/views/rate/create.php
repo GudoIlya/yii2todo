@@ -2,21 +2,21 @@
 
 use yii\helpers\Html;
 
+
 /* @var $this yii\web\View */
 /* @var $model app\modules\bills\models\Rates */
 
-$this->title = 'Update Rates: ' . $model->name;
+$this->title = 'Create Rates';
 $this->params['breadcrumbs'][] = ['label' => 'Rates', 'url' => ['index']];
-$this->params['breadcrumbs'][] = ['label' => $model->name, 'url' => ['view', 'id' => $model->id]];
-$this->params['breadcrumbs'][] = 'Update';
+$this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="rates-update">
+<div class="rates-create">
 
     <h1><?= Html::encode($this->title) ?></h1>
 
     <?= $this->render('_form', [
         'model' => $model,
-        'rateCategoriesItems' => $rateCategoriesItems
+        'productItems' => $productItems
     ]) ?>
 
 </div>

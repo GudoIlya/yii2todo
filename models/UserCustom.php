@@ -6,10 +6,9 @@ use \dektrium\user\models\User as BaseUser;
 use yii\data\ActiveDataProvider;
 use yii\db\ActiveRecord;
 
-use app\modules\bills\models\Estate;
-use app\modules\bills\models\Rates;
-use app\modules\bills\models\Services;
-use app\modules\bills\models\UsersServices;
+use app\modules\profile\models\Estate;
+use app\modules\profile\models\Rates;
+use app\modules\profile\models\EstateProduct;
 
 class UserCustom extends BaseUser{
 
@@ -31,20 +30,12 @@ class UserCustom extends BaseUser{
     /**
      * Получить недвижимость пользователя
      */
-    public function getEstates($params = false) {
-        $query = $this->hasMany(Estate::className(), ['user_id' => 'id']);
-        return $this->getDataProviderByQuery($query, $params);
+    public function getEstates() {
+        return $this->hasMany(Estate::className(), ['user_id' => 'id']);
     }
 
-
-    public function getRates($params = false) {
-        $query = $this->hasMany(Estate::className(), ['user_id' => 'id']);
-        return $this->getDataProviderByQuery($query, $params);
-    }
-
-    public function getUserServices($params = false) {
-        $query = $this->hasMany(Estate::className(), ['user_id' => 'id']);
-        return $this->getDataProviderByQuery($query, $params);
+    public function getEstatesDataProvider($params = false) {
+        $dp = $this->getDataProviderByQuery($this->getEstates());
     }
 
     public function getDataProviderByQuery($query, $params = false) {

@@ -5,8 +5,8 @@ namespace app\modules\profile\models;
 use app\models\UserCustom;
 use Yii;
 use yii\behaviors\TimestampBehavior;
-use yii\behaviors\BlameableBehavior;
 use yii\db\ActiveRecord;
+use app\modules\profile\models;
 
 /**
  * This is the model class for table "rates".
@@ -23,7 +23,7 @@ use yii\db\ActiveRecord;
  * @property Resources[] $resources
  * @property Services[] $services
  */
-class Rates extends \yii\db\ActiveRecord
+class Rates extends ActiveRecord
 {
 
     public function behaviors()
@@ -35,14 +35,6 @@ class Rates extends \yii\db\ActiveRecord
             'updatedAtAttribute' => false,
             'value' => function(){ return date('d.m.y'); },
         ];
-        $behaviors[] = [
-            'class' => BlameableBehavior::className(),
-            'createdByAttribute' => 'user_id',
-            'updatedByAttribute' => false,
-            'attributes' => [
-                ActiveRecord::EVENT_AFTER_VALIDATE => ['user_id']
-            ]
-        ];
         return $behaviors;
     }
 
@@ -51,7 +43,7 @@ class Rates extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'rates';
+        return 'rate';
     }
 
     /**
@@ -60,14 +52,12 @@ class Rates extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['name', 'price', 'category_id'], 'required'],
+            [['product_id'], 'integer'],
+            [['name', 'product_id', 'price', 'unit'], 'required'],
+            [['name', 'price', 'unit', 'date_create'], 'safe'],
             [['price'], 'number'],
-            [['category_id'], 'default', 'value' => null],
-            [['category_id'], 'integer'],
-            [['name', 'price', 'category_id'], 'safe'],
-            [['name'], 'string', 'max' => 255],
-            [['name', 'user_id'], 'unique', 'targetAttribute' => ['name', 'user_id']],
-            [['category_id'], 'exist', 'skipOnError' => true, 'targetClass' => RateCategories::className(), 'targetAttribute' => ['category_id' => 'id']],
+            [['unit'], 'string', 'max' => 100],
+            [['product_id'], 'exist', 'skipOnError' => true, 'targetClass' => Jkhproduct::className(), 'targetAttribute' => ['product_id' => 'id']]
         ];
     }
 
@@ -80,8 +70,9 @@ class Rates extends \yii\db\ActiveRecord
             'id' => 'ID',
             'name' => 'Наименование тарифа',
             'price' => 'Цена',
-            'category_id' => 'Категория тарифа',
+            'unit' => 'Единица измерения',
             'date_create' => 'Дата создания',
+            'product_id' => 'ID товара жкх'
         ];
     }
 
@@ -101,13 +92,6 @@ class Rates extends \yii\db\ActiveRecord
         return $this->hasMany(BillServices::className(), ['rate_id' => 'id']);
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getCategory()
-    {
-        return $this->hasOne(RateCategories::className(), ['id' => 'category_id']);
-    }
 
     public function getUser() {
         return $this->hasOne(UserCustom::className(), ['id' => 'user_id']);

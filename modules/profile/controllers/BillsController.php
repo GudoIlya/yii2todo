@@ -26,7 +26,7 @@ class BillsController extends Controller
                         'actions' => ['view'],
                         'allow'  => true,
                         'matchCallback' => function($rule, $action) {
-                            if( Yii::$app->user->identity->isAdmin || $this->isUserOwner() ) {
+                            if( isset(Yii::$app->user->identity) && Yii::$app->user->identity->isAdmin || $this->isUserOwner() ) {
                                 return true;
                             }
                             return false;

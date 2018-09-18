@@ -2,6 +2,10 @@
 
 namespace app\modules\profile\controllers;
 
+use Yii;
+use app\modules\profile\models\EstateSearch;
+use app\modules\profile\models\Jkhproduct;
+use app\modules\profile\models\JkhResource;
 use yii\web\Controller;
 use yii\filters\AccessControl;
 use dektrium\user\controllers\ProfileController;
@@ -38,18 +42,18 @@ class DefaultController extends ProfileController
 
         $profile = $this->finder->findProfileById($id);
         $userModel = $this->finder->findUserById($id);
-        $userEstatesDP = $userModel->getEstates();
-        $userRatesDP = $userModel->getRates();
-        $userServicesDP = $userModel->getUserServices();
+
+        $userEstateSearchModel = new EstateSearch();
+        $userEstatesModel = $userEstateSearchModel->search(Yii::$app->request->queryParams);
+
         if ($profile === null) {
             throw new NotFoundHttpException();
         }
 
         return $this->render('show', [
             'profile' => $profile,
-            'userEstatesDP' => $userEstatesDP,
-            'userRatesDP' => $userRatesDP,
-            'userServicesDP' => $userServicesDP
+            'userEstatesModel' => $userEstatesModel,
+            'userEstateSearchModel' => $userEstateSearchModel
         ]);
     }
 }

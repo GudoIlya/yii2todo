@@ -2,16 +2,16 @@
 
 namespace app\modules\profile\models;
 
-use app\models\UserCustom;
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use app\modules\profile\models\Rates;
+use app\modules\profile\models\Jkhproduct;
+use app\models\UserCustom;
 
 /**
- * RatesSearch represents the model behind the search form of `app\modules\bills\models\Rates`.
+ * EstateSearch represents the model behind the search form of `app\modules\bills\models\Estate`.
  */
-class RatesSearch extends Rates
+class JkhproductSearch extends Jkhproduct
 {
     /**
      * {@inheritdoc}
@@ -19,11 +19,8 @@ class RatesSearch extends Rates
     public function rules()
     {
         return [
-            [['id', 'product_id'], 'integer'],
-            [['name', 'price', 'unit', 'date_create'], 'safe'],
-            [['price'], 'number'],
-            [['unit'], 'string', 'max' => 100],
-            [['product_id'], 'exist', 'skipOnError' => true, 'targetClass' => Jkhproduct::className(), 'targetAttribute' => ['product_id' => 'id']]
+            [['id'], 'integer'],
+            [['name', 'description', 'type'], 'safe'],
         ];
     }
 
@@ -45,8 +42,7 @@ class RatesSearch extends Rates
      */
     public function search($params)
     {
-        $query = Rates::find()
-        ->innerJoin('jkh_product jp', 'jp.id = rate.id AND jp.user_id = '.UserCustom::getUserId());
+        $query = Jkhproduct::find()->where('user_id = '.UserCustom::getUserId());;
 
         // add conditions that should always apply here
 
@@ -65,13 +61,11 @@ class RatesSearch extends Rates
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
-            'unit' => $this->unit,
-            'date_create' => $this->date_create,
-            'product_id' => $this->product_id
+            'type' => $this->type,
         ]);
 
-        $query->andFilterWhere(['ilike', 'rate.name', $this->name]);
-        $query->andFilterWhere(['>', 'rate.price', $this->price]);
+        $query->andFilterWhere(['ilike', 'name', $this->name]);
+        $query->andFilterWhere(['ilike', 'description', $this->description]);
 
         return $dataProvider;
     }

@@ -2,7 +2,7 @@
 use yii\helpers\Html;
 use yii\widgets\DetailView;
 ?>
-<h3><?= Html::encode($model->title) ?></h3>
+<h3><?= Html::encode($model->name) ?></h3>
 <p>
     <?= Html::a('Изменить', ['/profile/estate/update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
     <?= Html::a('Удалить', ['/profile/estate/delete', 'id' => $model->id], [
@@ -18,7 +18,7 @@ use yii\widgets\DetailView;
     'model' => $model,
     'attributes' => [
         'id',
-        'title',
+        'name',
         'space',
     ],
 ]) ?>

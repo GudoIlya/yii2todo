@@ -2,7 +2,9 @@
 
 namespace app\modules\profile\controllers;
 
+use app\modules\profile\models\JkhproductSearch;
 use Yii;
+use yii\helpers\ArrayHelper;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\AccessControl;
@@ -10,12 +12,13 @@ use app\modules\profile\models\Rates;
 use app\modules\profile\models\RatesSearch;
 use app\modules\profile\models\UsersRates;
 use app\modules\profile\models\RateCategories;
-use app\modules\profile\controllers\RatesController as RatesControllerBase;
+use app\modules\profile\models\Jkhproduct;
+
 
 /**
  * RatesController implements the CRUD actions for Rates model.
  */
-class RatesController extends Controller
+class RateController extends Controller
 {
     public function behaviors()
     {
@@ -28,7 +31,7 @@ class RatesController extends Controller
                       'actions' => ['view'],
                       'allow'  => true,
                       'matchCallback' => function($rule, $action) {
-                            if( Yii::$app->user->identity->isAdmin || $this->isRateOwner() ) {
+                            if( isset(Yii::$app->user->identity) && Yii::$app->user->identity->isAdmin || $this->isRateOwner() ) {
                                 return true;
                             }
                             return false;
@@ -55,7 +58,8 @@ class RatesController extends Controller
      * @throws NotFoundHttpException
      */
     protected function isRateOwner() {
-        return $this->findModel(Yii::$app->request->get('id'))->user_id == Yii::$app->user->id;
+        $jkhproduct = Jkhproduct::find()->where(['user_id' => UserCustom::getUserId(), 'product_id' => Yii::$app->request->get('product_id')]);
+        return $jkhproduct->user_id == Yii::$app->user->id;
     }
 
     /**
@@ -94,17 +98,17 @@ class RatesController extends Controller
     public function actionCreate()
     {
         $ratesModel= new Rates();
-        $rateCategoriesItems = RateCategories::find()
-            ->select(['name'])
-            ->indexBy('id')
-            ->column();
+        $jkhproductsSearchModel = new JkhproductSearch();
+        $jkhproducts = $jkhproductsSearchModel->search(Yii::$app->request->queryParams)->getModels();
+        $productsItems = ArrayHelper::map($jkhproducts, 'id', 'name');
+        $ratesModel->load(Yii::$app->request->get(), '');
         if ( $ratesModel->load(Yii::$app->request->post()) && $ratesModel->save() ) {
             return $this->redirect(['view', 'id' => $ratesModel->id]);
         }
 
         return $this->render('create', [
             'model' => $ratesModel,
-            'rateCategoriesItems' => $rateCategoriesItems
+            'productItems' => $productsItems
         ]);
     }
 
@@ -118,17 +122,17 @@ class RatesController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
-        $rateCategoriesItems = RateCategories::find()
-            ->select(['name'])
-            ->indexBy('id')
-            ->column();
+        $jkhproductsSearchModel = new JkhproductSearch();
+        $jkhproducts = $jkhproductsSearchModel->search(Yii::$app->request->queryParams)->getModels();
+        $productsItems = ArrayHelper::map($jkhproducts, 'id', 'name');
+
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
         return $this->render('update', [
             'model' => $model,
-            'rateCategoriesItems' => $rateCategoriesItems
+            'productItems' => $productsItems
         ]);
     }
 

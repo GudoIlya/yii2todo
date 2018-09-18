@@ -1,7 +1,7 @@
 <?php
 
 use yii\helpers\Html;
-use yii\widgets\ListView;
+use yii\grid\GridView;
 use yii\widgets\Menu;
 
 /**
@@ -52,59 +52,28 @@ $this->params['breadcrumbs'][] = 'Профиль пользователя '.$thi
 </div>
 <!-- Недвижимость пользователя -->
 <div class="row">
-    <div class="col-xs-12 col-sm-12 col-md-12">
-        <h1>Список недвижимости</h1>
-        <div class="row">
-            <?= Menu::widget([
-                'items' => [
-                    ['label' => 'Добавить недвижимость', 'url' => ['/profile/estate/create']]
-                ]
-            ]);?>
-        </div>
-        <p>
-            <?= ListView::widget([
-                    'itemView' => 'estate/_oneEstateItem',
-                'dataProvider' => $userEstatesDP
-            ]);?>
-        </p>
-    </div>
-</div>
-<!-- Тарифы пользователя -->
-<div class="row">
-    <div class="col-xs-12 col-sm-12 col-md-12">
-        <h1>Список тарифов, заведенных пользователем</h1>
-        <div class="row">
-            <?= Menu::widget([
-                'items' => [
-                    ['label' => 'Добавить тариф', 'url' => ['/profile/rates/create']]
-                ]
-            ]);?>
-        </div>
-        <p>
-            <?= ListView::widget([
-                'itemView' => 'rates/_ratesItem',
-                'dataProvider' => $userRatesDP
-            ]);?>
-        </p>
-    </div>
-</div>
-<!-- Сервисы пользователя -->
-<div class="row">
-    <div class="col-xs-12 col-sm-12 col-md-12">
-        <h1>Список сервисов, заведенных пользователем</h1>
-        <div class="row">
-            <?= Menu::widget([
-                'items' => [
-                    ['label' => 'Список имеющихся услуг', 'url' => ['/profile/services']],
-                    ['label' => 'Добавить услугу', 'url' => ['/profile/userservices/create']]
-                ]
-            ]);?>
-        </div>
-        <p>
-            <?= ListView::widget([
-                'itemView' => 'services/_serviceItem',
-                'dataProvider' => $userServicesDP
-            ]);?>
-        </p>
-    </div>
+    <h1><?= Html::encode('Моя недвижимость') ?></h1>
+    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
+
+    <p>
+        <?= Html::a('Добавить новую', ['/profile/estate/create'], ['class' => 'btn btn-success']) ?>
+    </p>
+
+    <?= GridView::widget([
+        'dataProvider' => $userEstatesModel,
+        'filterModel' => $userEstateSearchModel,
+        'columns' => [
+            ['class' => 'yii\grid\SerialColumn'],
+
+            [
+                'attribute' => 'name',
+                'content' => function($data) {
+                    return Html::a($data->name, ['/profile/estate/view', 'id' => $data->id]);
+                }
+            ],
+            'space',
+
+            ['class' => 'yii\grid\ActionColumn', 'buttons' => ['view' => function($url, $model, $key) { return '';}]],
+        ],
+    ]); ?>
 </div>

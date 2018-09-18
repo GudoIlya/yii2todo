@@ -7,7 +7,7 @@ use yii\grid\GridView;
 /* @var $searchModel app\modules\bills\models\RatesSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Rates';
+$this->title = 'Мои тарифы';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="rates-index">
@@ -16,7 +16,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
     <p>
-        <?= Html::a('Create Rates', ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('Добавить тариф', ['create'], ['class' => 'btn btn-success']) ?>
     </p>
 
     <?= GridView::widget([
@@ -24,15 +24,11 @@ $this->params['breadcrumbs'][] = $this->title;
         'filterModel' => $searchModel,
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
-            [
-                    'label' => 'Владелец тарифа',
-                    'content' => function($data) {
-                        return $data->getUser()->one()->username;
-                    }
-            ],
+
             'name',
             'price',
-            'category_id',
+            'unit',
+            'product_id',
             'date_create',
 
             ['class' => 'yii\grid\ActionColumn'],

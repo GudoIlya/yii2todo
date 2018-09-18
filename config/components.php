@@ -38,6 +38,12 @@ return [
                 '@dektrium/user/views' => '@app/views/user'
             ]
         ]
+    ],
+    /*
+    [
+        'authManager' => [
+            'class' => 'yii\rbac\DbManager'
+        ]
     ]
     /*
     'urlManager' => [

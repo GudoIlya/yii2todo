@@ -4,6 +4,7 @@ namespace app\modules\profile\models;
 
 use Yii;
 use yii\db\ActiveRecord;
+use yii\db\Query;
 use yii\data\ActiveDataProvider;
 use app\models\UserCustom;
 use app\modules\profile\models\EstateProduct;
@@ -86,9 +87,13 @@ class Estate extends ActiveRecord
 
 
     public function getEstateProducts($productType) {
-        $query =  Jkhproduct::find()
-            ->innerJoin('estate_product ep', 'ep.estate_id = '.$this->id.' AND ep.product_id = jkh_product.id' )
-            ->andWHere('jkh_product.product_type = '.$productType);
+        $query =  new Query();
+        $query->select([
+            'jp.*'
+        ])
+            ->from('jkh_product jp')
+            ->innerJoin('estate_product ep', 'ep.product_id = jp.id and ep.estate_id = '.$this->id)
+            ->where(['jp.type' => $productType]);
 
         return new ActiveDataProvider([
             'query' => $query

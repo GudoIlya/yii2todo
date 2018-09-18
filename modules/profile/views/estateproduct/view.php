@@ -4,13 +4,14 @@ use yii\helpers\Html;
 use yii\widgets\DetailView;
 
 /* @var $this yii\web\View */
-/* @var $model app\modules\bills\models\Rates */
+/* @var $model app\modules\bills\models\Services */
 
-$this->title = $model->name;
-$this->params['breadcrumbs'][] = ['label' => 'Rates', 'url' => ['index']];
+$this->title = $model->getService()->one()->name;
+$rate = $model->getRate()->one();
+$this->params['breadcrumbs'][] = ['label' => 'Мои услуги', 'url' => ['/profile/userservices']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="rates-view">
+<div class="services-view">
 
     <h1><?= Html::encode($this->title) ?></h1>
 
@@ -28,13 +29,17 @@ $this->params['breadcrumbs'][] = $this->title;
     <?= DetailView::widget([
         'model' => $model,
         'attributes' => [
-            'name',
-            'price',
-            'category_id',
-            'date_create',
             [
-                    'label' => 'Владелец тарифа',
-                    'value' => $model->getUser()->one()->username
+                'label' => 'Наименование услуги',
+                'value' => $model->getService()->one()->name
+            ],
+            [
+                    'label' => 'Наименование Тарифа',
+                    'value' => $rate->name
+            ],
+            [
+                    'label' => 'Цена',
+                    'value' => $rate->price
             ]
         ],
     ]) ?>

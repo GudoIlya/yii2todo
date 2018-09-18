@@ -39,13 +39,14 @@ AppAsset::register($this);
         'options' => ['class' => 'navbar-nav navbar-right'],
         'items' => [
             ['label' => 'Home', 'url' => ['/site/index']],
-            ['label' => 'About', 'url' => ['/site/about']],
+            ['label' => 'Jkhproducts', 'url' => ['/profile/jkhproduct']],
             ['label' => 'Profile',
                 'items' => [
                         ['label' => 'Общая информация', 'url' => ['/profile']],
                         ['label' => 'Недвижимость пользователя', 'url' => ['/profile/estate']],
                         ['label' => 'Ресурсы пользователя', 'url' => ['/profile/userresources']],
-                        ['label' => 'Услуги пользователя', 'url' => ['/profile/userservices']]
+                        ['label' => 'Услуги пользователя', 'url' => ['/profile/userservices']],
+                        ['label' => 'Мои тарифы', 'url' => ['/profile/rate']]
                 ]
             ],
             ( isset(Yii::$app->user->identity) ? (['label' => 'Tasks', 'url' => ['/task/index']]) : '' ),

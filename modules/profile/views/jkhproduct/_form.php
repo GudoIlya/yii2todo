@@ -14,11 +14,11 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'price')->textInput() ?>
+    <?= $form->field($model, 'description')->textarea(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'category_id')->dropDownList([
-        $rateCategoriesItems
-    ], ['prompt' => 'Выберите категорию тарифа']) ?>
+    <?= $form->field($model, 'type')->dropDownList([
+        $model->getProductTypes()
+    ], ['prompt' => 'Выберите категорию продукта']) ?>
 
 
     <div class="form-group">

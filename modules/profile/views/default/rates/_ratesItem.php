@@ -16,11 +16,6 @@ use yii\widgets\DetailView;
 <?= DetailView::widget([
     'model' => $model,
     'attributes' => [
-        'name',
-        'price',
-        [
-                'label' => 'Тип тарифа',
-                'value' => $model->getCategory()->one()->name
-        ],
+        'name'
     ],
 ]) ?>

@@ -5,28 +5,35 @@ namespace app\modules\profile\controllers;
 use Yii;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
-use app\modules\profile\models\Estate;
-use app\modules\profile\models\EstateSearch;
 
+use app\modules\profile\models\UsersResources;
+use app\modules\profile\models\UsersResourcesSearch;
+use app\modules\profile\models\UsersServices;
+use app\modules\profile\models\UsersServicesSearch;
+use app\models\UserCustom;
+use app\modules\profile\models\Estate;
+use app\modules\profile\models\EstateProduct;
 /**
- * EstateController implements the CRUD actions for Estate model.
+ * UsersServicesController implements the CRUD actions for UsersServices model.
  */
-class EstateController extends Controller
+class EstateproductController extends Controller
 {
+    /**
+     * {@inheritdoc}
+     */
     public function behaviors()
     {
         return [
             'access' => [
                 'class' => AccessControl::className(),
                 'rules' => [
-                    ['actions' => ['index', 'create', 'update', 'delete', 'view'], 'allow' => true, 'roles' => ['@']],
+                    ['actions' => ['index', 'create'], 'allow' => true, 'roles' => ['@']],
                     [
                         'actions' => ['view'],
                         'allow'  => true,
                         'matchCallback' => function($rule, $action) {
-                            if( isset(Yii::$app->user->identity) && Yii::$app->user->identity->isAdmin || $this->isOwner() ) {
+                            if( isset(Yii::$app->user->identity) && Yii::$app->user->identity->isAdmin || $this->isUserOwner() ) {
                                 return true;
                             }
                             return false;
@@ -36,7 +43,7 @@ class EstateController extends Controller
                         'actions' => ['update', 'delete'],
                         'allow'   => true,
                         'matchCallback' => function($rule, $action) {
-                            if( $this->isOwner() ) {
+                            if( $this->isUserOwner() ) {
                                 return true;
                             }
                             return false;
@@ -48,21 +55,21 @@ class EstateController extends Controller
     }
 
     /**
-     * Check if authenticated user is owner of the rate
+     * Check if authenticated user is owner of the user resource
      * @return bool
      * @throws NotFoundHttpException
      */
-    protected function isOwner() {
+    protected function isUserOwner() {
         return $this->findModel(Yii::$app->request->get('id'))->user_id == Yii::$app->user->id;
     }
 
     /**
-     * Lists all Estate models.
+     * Lists all UsersServices models.
      * @return mixed
      */
     public function actionIndex()
     {
-        $searchModel = new EstateSearch();
+        $searchModel = new UsersResourcesSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
@@ -72,7 +79,7 @@ class EstateController extends Controller
     }
 
     /**
-     * Displays a single Estate model.
+     * Displays a single UsersServices model.
      * @param integer $id
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
@@ -85,25 +92,33 @@ class EstateController extends Controller
     }
 
     /**
-     * Creates a new Estate model.
+     * Creates a new UsersServices model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
     public function actionCreate()
     {
+        $model = new UsersResources();
+        $model->load(Yii::$app->request->get(), '');
         $estateModel = new Estate();
+        $resourceItems = $model->getResourceOptions();
+        $rateItems = $model->getRatesOptions();
+        $userEstatesList = $estateModel->getEstateOptions();
 
-        if ($estateModel->load(Yii::$app->request->post()) && $estateModel->save()) {
-                return $this->redirect(['/profile/estate']);
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            return $this->redirect(['view', 'id' => $model->id]);
         }
 
         return $this->render('create', [
-            'estateModel' => $estateModel
+            'model' => $model,
+            'resourceItems' => $resourceItems,
+            'rateItems' => $rateItems,
+            'estateItems' => $userEstatesList
         ]);
     }
 
     /**
-     * Updates an existing Estate model.
+     * Updates an existing UsersServices model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
      * @return mixed
@@ -111,19 +126,26 @@ class EstateController extends Controller
      */
     public function actionUpdate($id)
     {
-        $estateModel = $this->findModel($id);
+        $model = $this->findModel($id);
+        $estateModel = new Estate();
+        $resourceItems = $model->getResourceOptions();
+        $rateItems = $model->getRatesOptions();
+        $estateItems = $estateModel->getEstateOptions();
 
-        if ($estateModel->load(Yii::$app->request->post()) && $estateModel->save()) {
-            return $this->redirect(['view', 'id' => $estateModel->id]);
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            return $this->redirect(['view', 'id' => $model->id]);
         }
 
         return $this->render('update', [
-            'estateModel' => $estateModel,
+            'model' => $model,
+            'resourceItems' => $resourceItems,
+            'rateItems' => $rateItems,
+            'estateItems' => $estateItems
         ]);
     }
 
     /**
-     * Deletes an existing Estate model.
+     * Deletes an existing UsersServices model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed
@@ -133,19 +155,19 @@ class EstateController extends Controller
     {
         $this->findModel($id)->delete();
 
-        return $this->redirect(['/profile']);
+        return $this->redirect(['index']);
     }
 
     /**
-     * Finds the Estate model based on its primary key value.
+     * Finds the UsersServices model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
-     * @return Estate the loaded model
+     * @return UsersServices the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = Estate::findOne($id)) !== null) {
+        if (($model = EstateProduct::findOne($id)) !== null) {
             return $model;
         }
 

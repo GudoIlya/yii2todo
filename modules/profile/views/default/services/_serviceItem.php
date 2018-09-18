@@ -18,15 +18,7 @@ use yii\widgets\DetailView;
     'attributes' => [
         [
                 'label' => 'Наименование услуги',
-                'value' => $model->getService()->one()->name,
+                'value' => $model->getEstateProducts(\app\modules\profile\models\Jkhproduct::servicesId)->name,
         ],
-        [
-                'label' => 'Тариф',
-                'value' => $model->getRate()->one()->name,
-        ],
-        [
-                'label' => 'Цена',
-                'value' => $model->getRate()->one()->price
-        ]
     ],
 ]) ?>

@@ -2,23 +2,35 @@
 namespace app\modules\profile\models;
 
 use yii\db\ActiveRecord;
+use yii\behaviors\BlameableBehavior;
+use app\models\UserCustom;
 
 class Jkhproduct extends ActiveRecord{
-    const servicesId = 0;
-    const resourcesId = 1;
-    private static $productTypes = array(
-        self::servicesId => array(
-            'name' => 'Услуги'
-        ),
-        self::resourcesId => array(
-            'name' => 'Ресурсы'
-        )
-    );
 
     public function behaviors()
     {
         $behaviors = parent::behaviors();
+        $behaviors[] = [
+            'class' => BlameableBehavior::className(),
+            'createdByAttribute' => 'user_id',
+            'updatedByAttribute' => false,
+            'attributes' => [
+                ActiveRecord::EVENT_BEFORE_VALIDATE => ['user_id']
+            ]
+        ];
         return $behaviors;
+    }
+
+    public static function instantiate($row)
+    {
+        switch ($row['type']) {
+            case JkhService::TYPE:
+                return new JkhService();
+            case JkhResource::TYPE:
+                return new JkhResource();
+            default:
+                return new self;
+        }
     }
 
     /**
@@ -35,14 +47,15 @@ class Jkhproduct extends ActiveRecord{
     public function rules()
     {
         return [
-            [['name', 'product_type'], 'required'],
-            [['name'], 'string', ['maxlength' => 200]],
-            ['product_type', function($attribute, $params, $validator) {
-                if( !in_array($this->$attribute, $this->productTypes) ) {
+            [['name', 'type', 'user_id'], 'required'],
+            [['name'], 'string', 'max' => 200],
+            [['description'], 'string', 'max' => 300],
+            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => UserCustom::className(), 'targetAttribute' => ['user_id' => 'id']],
+            ['type', function($attribute, $params, $validator) {
+                if( !in_array($this->$attribute, array(JkhResource::TYPE, JkhService::TYPE) ) ) {
                     $this->addError($attribute, 'Такого типа продукта не существует');
                 }
-            }],
-            [['description'], 'string', ['maxlength' => 300]]
+            }]
         ];
     }
 
@@ -55,12 +68,16 @@ class Jkhproduct extends ActiveRecord{
             'id' => 'ID',
             'name' => 'Наименование',
             'description' => 'Описание',
-            'product_type' => 'Категория'
+            'type' => 'Категория',
+            'user_id' => 'Идентификатор пользователя'
         ];
     }
 
-    public static function getProductTypes() {
-        return self::productTypes;
+    public function getProductTypes() {
+        return array(
+            JkhResource::TYPE => JkhResource::TYPE_NAME,
+            JkhService::TYPE => JkhService::TYPE_NAME
+        );
     }
 
 }

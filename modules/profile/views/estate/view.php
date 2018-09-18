@@ -25,9 +25,9 @@ $this->params['breadcrumbs'][] = $this->title;
             <p><?= Html::a('Добавить Cчет', ['/profile/bills/create', 'estate_id' => $model->id], ['class' => 'btn btn-success']) ?></p>
         </div>
         <div id="services" class="tab-pane fade in active">
-            <p><?= Html::a('Добавить услугу', ['/profile/jkhproduct/create', 'estate_id' => $model->id, 'poduct_type' => \app\modules\profile\models\Jkhproduct::servicesId], ['class' => 'btn btn-success']) ?></p>
+            <p><?= Html::a('Добавить услугу', ['/profile/estateproduct/create', 'estate_id' => $model->id, 'poduct_type' => \app\modules\profile\models\JkhService::TYPE], ['class' => 'btn btn-success']) ?></p>
             <?= GridView::widget([
-                'dataProvider' => $model->getEstateProducts(\app\modules\profile\models\Jkhproduct::servicesId),
+                'dataProvider' => $model->getEstateProducts(\app\modules\profile\models\JkhService::TYPE),
                 'columns' => [
                     ['class' => 'yii\grid\SerialColumn'],
 
@@ -87,9 +87,9 @@ $this->params['breadcrumbs'][] = $this->title;
             ]); ?>
         </div>
         <div id="resources" class="tab-pane fade">
-            <p><?= Html::a('Добавить ресурс', ['/profile/jkhproduct/create', 'estate_id' => $model->id, 'poduct_type' => \app\modules\profile\models\Jkhproduct::resourcesId], ['class' => 'btn btn-success']) ?></p>
+            <p><?= Html::a('Добавить ресурс', ['/profile/estateproduct/create', 'estate_id' => $model->id, 'poduct_type' => \app\modules\profile\models\JkhResource::TYPE], ['class' => 'btn btn-success']) ?></p>
             <?= GridView::widget([
-                'dataProvider' => $model->getEstateProducts(\app\modules\profile\models\Jkhproduct::resourcesId),
+                'dataProvider' => $model->getEstateProducts(\app\modules\profile\models\JkhResource::TYPE),
                 'columns' => [
                     ['class' => 'yii\grid\SerialColumn'],
 

@@ -36,7 +36,7 @@ class ServicesController extends Controller
                         'actions' => ['update', 'delete'],
                         'allow'   => true,
                         'matchCallback' => function($rule, $action) {
-                            if( Yii::$app->user->identity->isAdmin  ) {
+                            if( isset(Yii::$app->user->identity) && Yii::$app->user->identity->isAdmin  ) {
                                 return true;
                             }
                             return false;
