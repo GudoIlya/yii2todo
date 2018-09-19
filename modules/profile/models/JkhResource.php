@@ -27,4 +27,8 @@ class JkhResource extends Jkhproduct {
     public function getResource() {
         return self::find();
     }
+
+    public function getRates() {
+        return self::find()->innerJoin('rate', 'id = rate.id');
+    }
 }

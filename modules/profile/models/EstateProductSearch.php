@@ -18,7 +18,7 @@ class EstateProductSearch extends EstateProduct
     public function rules()
     {
         return [
-            [['id', 'estate_id', 'product_id', 'rate_id'], 'integer'],
+            [['estate_id', 'product_id', 'rate_id'], 'integer'],
             [['default_value', 'date_create'], 'safe'],
         ];
     }
@@ -41,7 +41,8 @@ class EstateProductSearch extends EstateProduct
      */
     public function search($params)
     {
-        $query = EstateProduct::find();
+        $query = EstateProduct::find()->alias('ep')
+        ->innerJoin('jkh_product jp', 'jp.id = ep.product_id AND jp.user_id = '.Yii::$app->user->id);
 
         // add conditions that should always apply here
 
@@ -49,7 +50,7 @@ class EstateProductSearch extends EstateProduct
             'query' => $query,
         ]);
 
-        $this->load($params);
+        $this->load($params, '');
 
         if (!$this->validate()) {
             // uncomment the following line if you do not want to return any records when validation fails
@@ -59,10 +60,9 @@ class EstateProductSearch extends EstateProduct
 
         // grid filtering conditions
         $query->andFilterWhere([
-            'id' => $this->id,
-            'estate_id' => $this->estate_id,
-            'product_id' => $this->product_id,
-            'rate_id' => $this->rate_id,
+            'ep.estate_id' => $this->estate_id,
+            'ep.product_id' => $this->product_id,
+            'ep.rate_id' => $this->rate_id,
         ]);
 
         return $dataProvider;

@@ -61,7 +61,6 @@ class JkhproductSearch extends Jkhproduct
 
         // grid filtering conditions
         $query->andFilterWhere([
-            'id' => $this->id,
             'type' => $this->type,
         ]);
 
@@ -75,7 +74,8 @@ class JkhproductSearch extends Jkhproduct
      * Возвращает массив товаров, котоыре принадлежат пользователю
      */
     public function getJkhProductModels() {
-        $jkhproducts = $this->search(Yii::$app->request->queryParams)->getModels();
+        $jkhproducts = $this->search(Yii::$app->request->queryParams);
         return $jkhproducts;
     }
+
 }

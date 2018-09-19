@@ -113,9 +113,9 @@ class EstateproductController extends Controller
         $estateModel = new Estate();
         $estateItems = $estateModel->getUserEstate();
         $jkhProductSearch = new JkhproductSearch();
-        $productItems = ArrayHelper::map($jkhProductSearch->getJkhProductModels(), 'id', 'name');
+        $productItems = ArrayHelper::map($jkhProductSearch->getJkhProductModels()->getModels(), 'id', 'name');
         $rateItemsModel = new RateSearch();
-        $rateItems = ArrayHelper::map($rateItemsModel->getRatesModels(), 'id', 'name');
+        $rateItems = ArrayHelper::map($rateItemsModel->getRatesModels()->getModels(), 'id', 'name');
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
@@ -140,9 +140,11 @@ class EstateproductController extends Controller
     {
         $model = $this->findModel($id);
         $estateModel = new Estate();
-        $resourceItems = $model->getResourceOptions();
-        $rateItems = $model->getRatesOptions();
-        $estateItems = $estateModel->getEstateOptions();
+        $estateItems = $estateModel->getUserEstate();
+        $jkhProductSearch = new JkhproductSearch();
+        $productItems = ArrayHelper::map($jkhProductSearch->getJkhProductModels()->getModels(), 'id', 'name');
+        $rateItemsModel = new RateSearch();
+        $rateItems = ArrayHelper::map($rateItemsModel->getRatesModels()->getModels(), 'id', 'name');
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
@@ -150,9 +152,9 @@ class EstateproductController extends Controller
 
         return $this->render('update', [
             'model' => $model,
-            'resourceItems' => $resourceItems,
-            'rateItems' => $rateItems,
-            'estateItems' => $estateItems
+            'estateItems' => $estateItems,
+            'productItems' => $productItems,
+            'rateItems' => $rateItems
         ]);
     }
 

@@ -7,7 +7,7 @@ use yii\helpers\Html;
 /* @var $model app\modules\bills\models\Services */
 
 $this->title = 'Create Services';
-$this->params['breadcrumbs'][] = ['label' => 'Services', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => 'Счета', 'url' => ['/profile/estate']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="services-create">
@@ -16,9 +16,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <?= $this->render('_form', [
         'model' => $model,
-        'estateItems' => $estateItems,
-        'productItems' => $productItems,
-        'rateItems' => $rateItems
+        'productItems' => $productItems
     ]) ?>
 
 </div>

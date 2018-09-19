@@ -2,22 +2,18 @@
 
 namespace app\modules\profile\controllers;
 
-use app\modules\profile\models\JkhproductSearch;
 use Yii;
-use yii\helpers\ArrayHelper;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\AccessControl;
-use app\modules\profile\models\Rate;
-use app\modules\profile\models\RateSearch;
-use app\modules\profile\models\Jkhproduct;
-use app\models\UserCustom;
 
 
-/**
- * RatesController implements the CRUD actions for Rates model.
- */
-class RateController extends Controller
+use app\modules\profile\models\Bill;
+use app\modules\profile\models\BillSearch;
+use app\modules\profile\models\Estate;
+
+
+class BillController extends Controller
 {
     public function behaviors()
     {
@@ -27,20 +23,20 @@ class RateController extends Controller
                 'rules' => [
                     ['actions' => ['index', 'create'], 'allow' => true, 'roles' => ['@']],
                     [
-                      'actions' => ['view'],
-                      'allow'  => true,
-                      'matchCallback' => function($rule, $action) {
-                            if( isset(Yii::$app->user->identity) && Yii::$app->user->identity->isAdmin || $this->isRateOwner() ) {
+                        'actions' => ['view'],
+                        'allow'  => true,
+                        'matchCallback' => function($rule, $action) {
+                            if( isset(Yii::$app->user->identity) && Yii::$app->user->identity->isAdmin || $this->isUserOwner() ) {
                                 return true;
                             }
                             return false;
-                      }
+                        }
                     ],
                     [
                         'actions' => ['update', 'delete'],
                         'allow'   => true,
                         'matchCallback' => function($rule, $action) {
-                            if( $this->isRateOwner() ) {
+                            if( $this->isUserOwner() ) {
                                 return true;
                             }
                             return false;
@@ -56,20 +52,18 @@ class RateController extends Controller
      * @return bool
      * @throws NotFoundHttpException
      */
-    protected function isRateOwner() {
-        $jkhproduct = Jkhproduct::find()
-            ->innerJoin('rate rt', 'rt.id = '.Yii::$app->request->get('id').' AND rt.product_id = jkh_product.id')
-            ->where(['user_id' => UserCustom::getUserId()]);
-        return $jkhproduct->one()->user_id == Yii::$app->user->id;
+    protected function isUserOwner() {
+        return $this->findModel(Yii::$app->request->get('id'))->user_id == Yii::$app->user->id;
     }
 
+
     /**
-     * Lists all Rates models.
+     * Lists all Estate models.
      * @return mixed
      */
     public function actionIndex()
     {
-        $searchModel = new RateSearch();
+        $searchModel = new BillSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
@@ -79,7 +73,7 @@ class RateController extends Controller
     }
 
     /**
-     * Displays a single Rates model.
+     * Displays a single Estate model.
      * @param integer $id
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
@@ -92,29 +86,29 @@ class RateController extends Controller
     }
 
     /**
-     * Creates a new Rates model.
+     * Creates a new Estate model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
     public function actionCreate()
     {
-        $ratesModel= new Rate();
-        $jkhproductsSearchModel = new JkhproductSearch();
-        $jkhproducts = $jkhproductsSearchModel->search(Yii::$app->request->queryParams)->getModels();
-        $productsItems = ArrayHelper::map($jkhproducts, 'id', 'name');
-        $ratesModel->load(Yii::$app->request->get(), '');
-        if ( $ratesModel->load(Yii::$app->request->post()) && $ratesModel->save() ) {
-            return $this->redirect(['view', 'id' => $ratesModel->id]);
+        $model = new Bill();
+        $model->load(Yii::$app->request->get(), '');
+        $userEstateModel = new Estate();
+        $estateItems = $userEstateModel->getUserEstate();
+
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            return $this->redirect(Yii::$app->request->referrer ?: Yii::$app->homeUrl);
         }
 
         return $this->render('create', [
-            'model' => $ratesModel,
-            'productItems' => $productsItems
+            'model' => $model,
+            'estateItems' => $estateItems
         ]);
     }
 
     /**
-     * Updates an existing Rates model.
+     * Updates an existing Estate model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
      * @return mixed
@@ -123,22 +117,21 @@ class RateController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
-        $jkhproductsSearchModel = new JkhproductSearch();
-        $jkhproducts = $jkhproductsSearchModel->search(Yii::$app->request->queryParams)->getModels();
-        $productsItems = ArrayHelper::map($jkhproducts, 'id', 'name');
-
+        $model->load(Yii::$app->request->get(), '');
+        $userEstateModel = new Estate();
+        $estateItems = $userEstateModel->getUserEstate();
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
-        return $this->render('update', [
+        return $this->render('create', [
             'model' => $model,
-            'productItems' => $productsItems
+            'estateItems' => $estateItems
         ]);
     }
 
     /**
-     * Deletes an existing Rates model.
+     * Deletes an existing Estate model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed
@@ -148,23 +141,22 @@ class RateController extends Controller
     {
         $this->findModel($id)->delete();
 
-        return $this->redirect(['index']);
+        return $this->redirect(['/profile/bills']);
     }
 
     /**
-     * Finds the Rates model based on its primary key value.
+     * Finds the Estate model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
-     * @return Rate the loaded model
+     * @return Bill the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = Rate::findOne($id)) !== null) {
+        if (($model = Bill::findOne($id)) !== null) {
             return $model;
         }
 
         throw new NotFoundHttpException('The requested page does not exist.');
     }
-
 }

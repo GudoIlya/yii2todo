@@ -2,15 +2,17 @@
 
 namespace app\modules\profile\models;
 
+
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use app\modules\profile\models\BillServices;
+use app\modules\profile\models\Bill;
+use app\models\UserCustom;
 
 /**
- * BillServicesSearch represents the model behind the search form of `app\modules\bills\models\BillServices`.
+ * BillSearch represents the model behind the search form of `app\modules\bills\models\Bills`.
  */
-class BillServicesSearch extends BillServices
+class BillSearch extends Bill
 {
     /**
      * {@inheritdoc}
@@ -18,8 +20,11 @@ class BillServicesSearch extends BillServices
     public function rules()
     {
         return [
-            [['id', 'service_id', 'bill_id', 'rate_id'], 'integer'],
-            [['quantity', 'summ'], 'number'],
+            [['id'], 'integer'],
+            [['bill_number', 'date_create'], 'safe'],
+            [['estate_id'],'integer'],
+            [['total'], 'number'],
+            [['is_paid'], 'boolean'],
         ];
     }
 
@@ -41,7 +46,9 @@ class BillServicesSearch extends BillServices
      */
     public function search($params)
     {
-        $query = BillServices::find();
+        $query = Bill::find()
+            ->alias('bl')
+        ->innerJoin('estate et', 'et.user_id = '.UserCustom::getUserId());
 
         // add conditions that should always apply here
 
@@ -59,13 +66,12 @@ class BillServicesSearch extends BillServices
 
         // grid filtering conditions
         $query->andFilterWhere([
-            'id' => $this->id,
-            'service_id' => $this->service_id,
-            'bill_id' => $this->bill_id,
-            'rate_id' => $this->rate_id,
-            'quantity' => $this->quantity,
-            'summ' => $this->summ,
+            'estate_id' => $this->estate_id,
+            'total' => 'total',
+            'is_paid' => $this->is_paid,
         ]);
+
+        $query->andFilterWhere(['ilike', 'billnumber', $this->bill-number]);
 
         return $dataProvider;
     }

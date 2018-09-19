@@ -28,5 +28,7 @@ class JkhService extends Jkhproduct {
         return self::find();
     }
 
-
+    public function getRates() {
+        return self::find()->innerJoin('rate', 'id = rate.id');
+    }
 }

@@ -94,12 +94,22 @@ class Estate extends ActiveRecord
         return new ActiveDataProvider(['query'  => $query]);
     }
 
+    public function getEstateProductOptions($productType) {
+        return EstateProduct::find()
+            ->innerJoin('jkh_product jp', 'estate_product.product_id = jp.id and estate_product.estate_id = '.$this->id)
+            ->where(['jp.type' => $productType])->select(['name'])->indexBy('id')->column();
+    }
+
     public function getUserEstate() {
         $query = new Query();
         return $query->select(['name'])->from('estate')->where(['user_id' => Yii::$app->user->id])->indexBy('id')->column();
     }
 
-    public function getEstateBills() {
-        return true;
+    public function getBills() {
+        return $this->hasMany(Bill::className(), ['estate_id' => 'id']);
+    }
+
+    public function getBillsDP() {
+        return new ActiveDataProvider(['query' => $this->getBills()]);
     }
 }

@@ -15,9 +15,10 @@ class m180917_121511_create_bill_product_table extends Migration
         $this->createTable('bill_product', [
             'id' => $this->primaryKey(),
             'bill_id' => $this->integer()->notNull(),
-            'product_id' => $this->integer()->notNull(),
+            'estate_product_id' => $this->integer()->notNull(),
             'rate_id' => $this->integer()->notNull(),
-            'quantity' => $this->float()->notNull()
+            'quantity' => $this->float()->notNull(),
+            'current_counter_value' => $this->float()->notNull()
         ]);
 
         $this->addForeignKey(
@@ -29,9 +30,9 @@ class m180917_121511_create_bill_product_table extends Migration
             'cascade'
         );
         $this->addForeignKey(
-            'fk-bill-product-product-id',
+            'fk-bill-product-estate_product_id',
             'bill_product',
-            'product_id',
+            'estate_product_id',
             'jkh_product',
             'id',
             'cascade'
@@ -53,7 +54,7 @@ class m180917_121511_create_bill_product_table extends Migration
     public function safeDown()
     {
         $this->dropForeignKey('fk-bill-product-bill-id', 'bill_product');
-        $this->dropForeignKey('fk-bill-product-product-id', 'bill_product');
+        $this->dropForeignKey('fk-bill-product-estate_product_id', 'bill_product');
         $this->dropForeignKey('fk-bill-product-rate-id', 'bill_product');
         $this->dropTable('bill_product');
     }

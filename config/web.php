@@ -14,7 +14,8 @@ $config = [
     'components' => $components,
     'modules' => $modules,
     'params' => $params,
-    'defaultRoute' => '/profile/estate'
+    'defaultRoute' => '/profile/estate',
+    'language' => 'ru'
 ];
 
 if (YII_ENV_DEV) {

@@ -22,7 +22,26 @@ $this->params['breadcrumbs'][] = $this->title;
     </ul>
     <div class="tab-content">
         <div id="bills" class="tab-pane fade">
-            <p><?= Html::a('Добавить Cчет', ['/profile/bills/create', 'estate_id' => $model->id], ['class' => 'btn btn-success']) ?></p>
+            <p><?= Html::a('Добавить Cчет', ['/profile/bill/create', 'estate_id' => $model->id], ['class' => 'btn btn-success']) ?></p>
+            <?= GridView::widget([
+                    'dataProvider' => $model->getBillsDP(),
+                    'columns' => [
+                            ['class' => 'yii\grid\SerialColumn'],
+
+                            [
+                                    'label' => 'Номер счета',
+                                    'content' => function($data) {
+                                        return Html::a($data->billnumber, ['/profile/bill/view', 'id' => $data->id]);
+                                    }
+                            ],
+                            'total',
+                            'is_paid',
+                            'date_pay:date',
+
+                            ['class' => 'yii\grid\ActionColumn'],
+                    ],
+            ]);
+            ?>
         </div>
         <div id="services" class="tab-pane fade in active">
             <p><?= Html::a('Добавить услугу', ['/profile/estateproduct/create', 'estate_id' => $model->id, 'type' => \app\modules\profile\models\JkhService::TYPE], ['class' => 'btn btn-success']) ?></p>
@@ -36,7 +55,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         'content' => function($data) {
                             $service = $data->getJkhProduct()->one()->getService()->one();
                             return Html::a($service->name, [
-                                '/profile/userservices/view', 'id' => $data->id
+                                '/profile/estateproduct/view', 'id' => $data->id
                             ]);
                         }
                     ],
@@ -49,19 +68,19 @@ $this->params['breadcrumbs'][] = $this->title;
                     [
                         'label' => 'Тариф',
                         'content' => function($data) {
-                            $rate = $data->getJkhProduct()->one()->getRate()->one();
+                            $rate = $data->getRate()->one();
                             return Html::a($rate->name, [
-                                    '/profile/rates/update', 'id' => $rate->id
+                                    '/profile/rate/update', 'id' => $rate->id
                             ]);
                         }
                     ],
                     [
                             'label' => 'Цена',
                             'content' => function($data) {
-                                return $data->getJkhProduct()->one()->getRate()->one()->price;
+                                $rate = $data->getRate()->one();
+                                return $rate->price.' '.$rate->unit;
                             }
                     ],
-
                     ['class' => 'yii\grid\ActionColumn',
                         'buttons' => [
                                 'view' => function($url, $model, $key) {return '';},
@@ -96,7 +115,10 @@ $this->params['breadcrumbs'][] = $this->title;
                     [
                         'label' => 'Наименование',
                         'content' => function($data) {
-                            return $data->getJkhProduct()->one()->getResource()->one()->name;
+                            $resource = $data->getJkhProduct()->one()->getResource()->one();
+                            return Html::a($resource->name, [
+                                '/profile/estateproduct/view', 'id' => $data->id
+                            ]);
                         }
                     ],
                     [
@@ -108,20 +130,20 @@ $this->params['breadcrumbs'][] = $this->title;
                     [
                         'label' => 'Тариф',
                         'content' => function($data) {
-                            return $data->getJkhProduct()->one()->getRate()->one()->name;
+                            return $data->getRate()->one()->name;
                         }
                     ],
                     [
                         'label' => 'Цена',
                         'content' => function($data) {
-                            return $data->getJkhProduct()->one()->getRate()->one()->price;
+                            return $data->getRate()->one()->price;
                         }
                     ],
 
                     ['class' => 'yii\grid\ActionColumn',
                         'buttons' => [
                             'update' => function($url, $model, $key) {
-                                return Html::a('<span class="glyphicon glyphicon-pencil"></span>', '/profile/services/update/'.$model->id);
+                                return Html::a('<span class="glyphicon glyphicon-pencil"></span>', '/profile/estateproduct/update/'.$model->id);
                             }
                         ]
                     ],

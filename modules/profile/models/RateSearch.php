@@ -45,8 +45,8 @@ class RateSearch extends Rate
      */
     public function search($params)
     {
-        $query = Rate::find()
-        ->leftJoin('jkh_product jp', 'jp.id = rate.product_id AND  jp.user_id = '.UserCustom::getUserId());
+        $query = Rate::find()->alias('rt')
+        ->leftJoin('jkh_product jp', 'jp.id = rt.product_id AND  jp.user_id = '.UserCustom::getUserId());
 
         // add conditions that should always apply here
 
@@ -64,14 +64,13 @@ class RateSearch extends Rate
 
         // grid filtering conditions
         $query->andFilterWhere([
-            'id' => $this->id,
-            'unit' => $this->unit,
-            'date_create' => $this->date_create,
-            'product_id' => $this->product_id
+            'rt.unit' => $this->unit,
+            'rt.date_create' => $this->date_create,
+            'rt.product_id' => $this->product_id
         ]);
 
-        $query->andFilterWhere(['ilike', 'rate.name', $this->name]);
-        $query->andFilterWhere(['>', 'rate.price', $this->price]);
+        $query->andFilterWhere(['ilike', 'rt.name', $this->name]);
+        $query->andFilterWhere(['>', 'rt.price', $this->price]);
         $query->andFilterWhere(['jp.type' => Yii::$app->request->get('type')]);
 
         return $dataProvider;
@@ -81,7 +80,7 @@ class RateSearch extends Rate
      * Возвращает массив тарифов
      */
     public function getRatesModels() {
-        $rates = $this->search(Yii::$app->request->queryParams)->getModels();
+        $rates = $this->search(Yii::$app->request->queryParams);
         return $rates;
     }
 }

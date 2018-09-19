@@ -2,18 +2,20 @@
 
 namespace app\modules\profile\controllers;
 
+use app\modules\profile\models\EstateProduct;
 use Yii;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\AccessControl;
 
 
-use app\modules\profile\models\Bills;
-use app\modules\profile\models\BillsSearch;
+use app\modules\profile\models\Bill;
+use app\modules\profile\models\BillSearch;
+use app\modules\profile\models\BillProduct;
 use app\modules\profile\models\Estate;
 
 
-class BillsController extends Controller
+class BillproductController extends Controller
 {
     public function behaviors()
     {
@@ -53,7 +55,8 @@ class BillsController extends Controller
      * @throws NotFoundHttpException
      */
     protected function isUserOwner() {
-        return $this->findModel(Yii::$app->request->get('id'))->user_id == Yii::$app->user->id;
+        $estateOwnerId = $this->findModel(Yii::$app->request->get('id'))->getBill()->getEstate()->one()->user_id;
+        return $estateOwnerId == Yii::$app->user->id;
     }
 
 
@@ -63,7 +66,7 @@ class BillsController extends Controller
      */
     public function actionIndex()
     {
-        $searchModel = new BillsSearch();
+        $searchModel = new BillSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
@@ -92,18 +95,17 @@ class BillsController extends Controller
      */
     public function actionCreate()
     {
-        $model = new Bills();
+        $model = new BillProduct();
         $model->load(Yii::$app->request->get(), '');
-        $userEstateModel = new Estate();
-        $estateItems = $userEstateModel->getEstateOptions();
+        $productItems = Bill::findOne($model->bill_id)->getEstate()->one()->getEstateProductOptions(Yii::$app->request->get('type'));
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['/profile']);
+            return $this->redirect(Yii::$app->request->referrer ?: Yii::$app->homeUrl);
         }
 
         return $this->render('create', [
             'model' => $model,
-            'estateItems' => $estateItems
+            'productItems' => $productItems
         ]);
     }
 
@@ -116,23 +118,17 @@ class BillsController extends Controller
      */
     public function actionUpdate($id)
     {
-        $estateModel = $this->findModel($id);
-        $estateOwnersModel = EstateOwners::find()->where(['estate_id' => $estateModel->id, 'user_id' => Yii::$app->user->identity->getId()])->one();
-        $estateModel->scenario = 'update';
-        $estateOwnersModel->scenario = 'update';
-        if ($estateModel->load(Yii::$app->request->post()) && $estateOwnersModel->load(Yii::$app->request->post())) {
-            $isValid = $estateModel->validate();
-            $isValid = $estateOwnersModel->validate() && $isValid;
-            if($isValid) {
-                $estateModel->save(false);
-                $estateOwnersModel->save(false);
-                return $this->redirect(['view', 'id' => $estateModel->id]);
-            }
+        $model = $this->findModel($id);
+        $model->load(Yii::$app->request->get(), '');
+        $userEstateModel = new Estate();
+        $estateItems = $userEstateModel->getUserEstate();
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            return $this->redirect(['view', 'id' => $model->id]);
         }
 
-        return $this->render('update', [
-            'estateModel' => $estateModel,
-            'estateOwnersModel' => $estateOwnersModel
+        return $this->render('create', [
+            'model' => $model,
+            'estateItems' => $estateItems
         ]);
     }
 
@@ -147,19 +143,19 @@ class BillsController extends Controller
     {
         $this->findModel($id)->delete();
 
-        return $this->redirect(['/profile/bills']);
+        return $this->redirect(['/profile/bill']);
     }
 
     /**
      * Finds the Estate model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
-     * @return Bills the loaded model
+     * @return BillProduct the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = Bills::findOne($id)) !== null) {
+        if (($model = BillProduct::findOne($id)) !== null) {
             return $model;
         }
 
