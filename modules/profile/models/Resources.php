@@ -13,7 +13,7 @@ use Yii;
  * @property int $current_rate
  *
  * @property BillResources[] $billResources
- * @property Rates $currentRate
+ * @property Rate $currentRate
  * @property UsersResources[] $usersResources
  */
 class Resources extends \yii\db\ActiveRecord
@@ -63,7 +63,7 @@ class Resources extends \yii\db\ActiveRecord
      */
     public function getCurrentRate()
     {
-        return $this->hasOne(Rates::className(), ['id' => 'current_rate']);
+        return $this->hasOne(Rate::className(), ['id' => 'current_rate']);
     }
 
     /**

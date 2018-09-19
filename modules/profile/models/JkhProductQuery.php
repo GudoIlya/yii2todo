@@ -7,7 +7,7 @@ use yii\db\ActiveQuery;
 class JkhProductQuery extends ActiveQuery{
 
     public $type;
-    public $table;
+    public $tableName;
 
     public function prepare($builder) {
         if($this->type !== null) {

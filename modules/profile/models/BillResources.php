@@ -15,7 +15,7 @@ use Yii;
  * @property double $summ
  *
  * @property Bills $bill
- * @property Rates $rate
+ * @property Rate $rate
  * @property Resources $resource
  */
 class BillResources extends \yii\db\ActiveRecord
@@ -39,7 +39,7 @@ class BillResources extends \yii\db\ActiveRecord
             [['resource_id', 'bill_id', 'rate_id'], 'integer'],
             [['quantity', 'summ'], 'number'],
             [['bill_id'], 'exist', 'skipOnError' => true, 'targetClass' => Bills::className(), 'targetAttribute' => ['bill_id' => 'id']],
-            [['rate_id'], 'exist', 'skipOnError' => true, 'targetClass' => Rates::className(), 'targetAttribute' => ['rate_id' => 'id']],
+            [['rate_id'], 'exist', 'skipOnError' => true, 'targetClass' => Rate::className(), 'targetAttribute' => ['rate_id' => 'id']],
             [['resource_id'], 'exist', 'skipOnError' => true, 'targetClass' => Resources::className(), 'targetAttribute' => ['resource_id' => 'id']],
         ];
     }
@@ -72,7 +72,7 @@ class BillResources extends \yii\db\ActiveRecord
      */
     public function getRate()
     {
-        return $this->hasOne(Rates::className(), ['id' => 'rate_id']);
+        return $this->hasOne(Rate::className(), ['id' => 'rate_id']);
     }
 
     /**

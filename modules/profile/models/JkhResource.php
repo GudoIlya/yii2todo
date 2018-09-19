@@ -24,4 +24,7 @@ class JkhResource extends Jkhproduct {
         return parent::beforeSave($insert);
     }
 
+    public function getResource() {
+        return self::find();
+    }
 }

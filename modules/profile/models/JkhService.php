@@ -24,4 +24,9 @@ class JkhService extends Jkhproduct {
         return parent::beforeSave($insert);
     }
 
+    public function getService() {
+        return self::find();
+    }
+
+
 }

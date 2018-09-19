@@ -18,18 +18,18 @@ use yii\widgets\ActiveForm;
         $estateItems
     ], ['prompt' => 'Для какой недвижимости ресурс?']); ?>
 
-    <?= $form->field($model, 'service_id')->dropDownList([
+    <?= $form->field($model, 'product_id')->dropDownList([
         $productItems
-    ], ['prompt' => 'Существующую услугу']) ?>
+    ], ['prompt' => 'Выберете предоставляемый товар']) ?>
 
-    <?= $form->field($model, 'current_rate')->dropDownList([
+    <?= $form->field($model, 'rate_id')->dropDownList([
         $rateItems
     ], ['prompt' => 'Выберите действующий тариф']) ?>
 
     <?= $form->field($model, 'default_value')->textInput(['maxlength' => true]); ?>
 
     <div class="form-group">
-        <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
+        <?= Html::submitButton('Сохранить', ['class' => 'btn btn-success']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>

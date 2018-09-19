@@ -25,7 +25,7 @@ $this->params['breadcrumbs'][] = $this->title;
             <p><?= Html::a('Добавить Cчет', ['/profile/bills/create', 'estate_id' => $model->id], ['class' => 'btn btn-success']) ?></p>
         </div>
         <div id="services" class="tab-pane fade in active">
-            <p><?= Html::a('Добавить услугу', ['/profile/estateproduct/create', 'estate_id' => $model->id, 'poduct_type' => \app\modules\profile\models\JkhService::TYPE], ['class' => 'btn btn-success']) ?></p>
+            <p><?= Html::a('Добавить услугу', ['/profile/estateproduct/create', 'estate_id' => $model->id, 'type' => \app\modules\profile\models\JkhService::TYPE], ['class' => 'btn btn-success']) ?></p>
             <?= GridView::widget([
                 'dataProvider' => $model->getEstateProducts(\app\modules\profile\models\JkhService::TYPE),
                 'columns' => [
@@ -34,7 +34,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     [
                         'label' => 'Наименование',
                         'content' => function($data) {
-                            $service = $data->getService()->one();
+                            $service = $data->getJkhProduct()->one()->getService()->one();
                             return Html::a($service->name, [
                                 '/profile/userservices/view', 'id' => $data->id
                             ]);
@@ -43,13 +43,13 @@ $this->params['breadcrumbs'][] = $this->title;
                     [
                         'label' => 'Описание',
                         'content' => function($data) {
-                            return $data->getService()->one()->description;
+                            return $data->getJkhProduct()->one()->getService()->one()->description;
                         }
                     ],
                     [
                         'label' => 'Тариф',
                         'content' => function($data) {
-                            $rate = $data->getRate()->one();
+                            $rate = $data->getJkhProduct()->one()->getRate()->one();
                             return Html::a($rate->name, [
                                     '/profile/rates/update', 'id' => $rate->id
                             ]);
@@ -58,7 +58,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     [
                             'label' => 'Цена',
                             'content' => function($data) {
-                                return $data->getRate()->one()->price;
+                                return $data->getJkhProduct()->one()->getRate()->one()->price;
                             }
                     ],
 
@@ -87,7 +87,7 @@ $this->params['breadcrumbs'][] = $this->title;
             ]); ?>
         </div>
         <div id="resources" class="tab-pane fade">
-            <p><?= Html::a('Добавить ресурс', ['/profile/estateproduct/create', 'estate_id' => $model->id, 'poduct_type' => \app\modules\profile\models\JkhResource::TYPE], ['class' => 'btn btn-success']) ?></p>
+            <p><?= Html::a('Добавить ресурс', ['/profile/estateproduct/create', 'estate_id' => $model->id, 'type' => \app\modules\profile\models\JkhResource::TYPE], ['class' => 'btn btn-success']) ?></p>
             <?= GridView::widget([
                 'dataProvider' => $model->getEstateProducts(\app\modules\profile\models\JkhResource::TYPE),
                 'columns' => [
@@ -96,25 +96,25 @@ $this->params['breadcrumbs'][] = $this->title;
                     [
                         'label' => 'Наименование',
                         'content' => function($data) {
-                            return $data->getResource()->one()->name;
+                            return $data->getJkhProduct()->one()->getResource()->one()->name;
                         }
                     ],
                     [
                         'label' => 'Описание',
                         'content' => function($data) {
-                            return $data->getResource()->one()->description;
+                            return $data->getJkhProduct()->one()->getResource()->one()->description;
                         }
                     ],
                     [
                         'label' => 'Тариф',
                         'content' => function($data) {
-                            return $data->getRate()->one()->name;
+                            return $data->getJkhProduct()->one()->getRate()->one()->name;
                         }
                     ],
                     [
                         'label' => 'Цена',
                         'content' => function($data) {
-                            return $data->getRate()->one()->price;
+                            return $data->getJkhProduct()->one()->getRate()->one()->price;
                         }
                     ],
 

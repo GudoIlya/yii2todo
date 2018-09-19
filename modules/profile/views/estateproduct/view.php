@@ -6,9 +6,9 @@ use yii\widgets\DetailView;
 /* @var $this yii\web\View */
 /* @var $model app\modules\bills\models\Services */
 
-$this->title = $model->getService()->one()->name;
-$rate = $model->getRate()->one();
-$this->params['breadcrumbs'][] = ['label' => 'Мои услуги', 'url' => ['/profile/userservices']];
+$currentProduct = $model->getJkhProduct()->one();
+$this->title = $currentProduct->name;
+$this->params['breadcrumbs'][] = ['label' => $currentProduct::TYPE == \app\modules\profile\models\JkhService::TYPE ? 'Мои услуги' : 'Мои ресурсы', 'url' => ['/profile/estateproduct', 'type' => $currentProduct::TYPE]];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="services-view">
@@ -30,16 +30,23 @@ $this->params['breadcrumbs'][] = $this->title;
         'model' => $model,
         'attributes' => [
             [
-                'label' => 'Наименование услуги',
-                'value' => $model->getService()->one()->name
+                'label' => 'Недвижимость',
+                'value' => $model->getEstate()->one()->name
             ],
             [
-                    'label' => 'Наименование Тарифа',
-                    'value' => $rate->name
+                    'label' => 'Продукт',
+                    'value' => $currentProduct->name
             ],
             [
-                    'label' => 'Цена',
-                    'value' => $rate->price
+                    'label' => 'Тариф',
+                    'value' => function($model) {
+                        $rate = $model->getRate()->one();
+                        return $rate->name." цена:".$rate->price;
+                    }
+            ],
+            [
+                    'label' => 'Норматив',
+                    'value' => $model->default_value
             ]
         ],
     ]) ?>

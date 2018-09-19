@@ -12,7 +12,7 @@ use Yii;
  * @property string $description
  *
  * @property BillServices[] $billServices
- * @property Rates $currentRate
+ * @property Rate $currentRate
  * @property UsersServices[] $usersServices
  */
 class Services extends \yii\db\ActiveRecord

@@ -8,6 +8,7 @@ use yii\data\ActiveDataProvider;
 use app\modules\profile\models\Jkhproduct;
 use app\models\UserCustom;
 
+
 /**
  * EstateSearch represents the model behind the search form of `app\modules\bills\models\Estate`.
  */
@@ -50,7 +51,7 @@ class JkhproductSearch extends Jkhproduct
             'query' => $query,
         ]);
 
-        $this->load($params);
+        $this->load($params, '');
 
         if (!$this->validate()) {
             // uncomment the following line if you do not want to return any records when validation fails
@@ -68,5 +69,13 @@ class JkhproductSearch extends Jkhproduct
         $query->andFilterWhere(['ilike', 'description', $this->description]);
 
         return $dataProvider;
+    }
+
+    /**
+     * Возвращает массив товаров, котоыре принадлежат пользователю
+     */
+    public function getJkhProductModels() {
+        $jkhproducts = $this->search(Yii::$app->request->queryParams)->getModels();
+        return $jkhproducts;
     }
 }

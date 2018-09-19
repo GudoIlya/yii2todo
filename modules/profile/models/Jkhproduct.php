@@ -80,4 +80,9 @@ class Jkhproduct extends ActiveRecord{
         );
     }
 
+    public function getRate() {
+        $query = Rate::find()
+            ->innerJoin('estate_product ep', 'ep.rate_id = rate.id AND ep.product_id = '.$this->id);
+        return $query;
+    }
 }

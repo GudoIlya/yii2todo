@@ -19,11 +19,10 @@ use app\modules\profile\models;
  *
  * @property BillResources[] $billResources
  * @property BillServices[] $billServices
- * @property RateCategories $category
  * @property Resources[] $resources
  * @property Services[] $services
  */
-class Rates extends ActiveRecord
+class Rate extends ActiveRecord
 {
 
     public function behaviors()

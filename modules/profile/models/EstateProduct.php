@@ -1,6 +1,7 @@
 <?php
 namespace app\modules\profile\models;
 
+use yii\data\ActiveDataProvider;
 use yii\db\ActiveRecord;
 use yii\behaviors\TimestampBehavior;
 
@@ -37,7 +38,7 @@ class EstateProduct extends ActiveRecord {
             [['default_value'], 'string'], // Пока что строка
             [['estate_id'], 'exist', 'skipOnError' => true, 'targetClass' => Estate::className(), 'targetAttribute' => ['estate_id' => 'id']],
             [['product_id'], 'exist', 'skipOnError' => true, 'targetClass' => Jkhproduct::className(), 'targetAttribute' => ['product_id' => 'id']],
-            [['rate_id'], 'exist', 'skipOnError' => true, 'targetClass' => Rate::classname(), 'targetAttribute' => ['rate_id' => 'id']],
+            [['rate_id'], 'exist', 'skipOnError' => true, 'targetClass' => Rate::className(), 'targetAttribute' => ['rate_id' => 'id']],
             [['estate_id', 'product_id'], 'unique', 'targetAttribute' => ['estate_id', 'product_id']],
         ];
     }
@@ -54,6 +55,18 @@ class EstateProduct extends ActiveRecord {
             'rate_id' => 'Тариф',
             'default_value' => 'Норматив'
         ];
+    }
+
+    public function getEstate() {
+        return $this->hasOne(Estate::className(), ['id' => 'estate_id']);
+    }
+
+    public function getJkhProduct() {
+        return $this->hasOne(Jkhproduct::className(), ['id' => 'product_id']);
+    }
+
+    public function getRate() {
+        return $this->hasOne(Rate::className(), ['id' => 'rate_id']);
     }
 
 }

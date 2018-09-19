@@ -4,7 +4,7 @@ namespace app\modules\profile\models;
 
 use Yii;
 use app\models\UserCustom as User;
-use app\modules\profile\models\Rates;
+use app\modules\profile\models\Rate;
 
 /**
  * This is the model class for table "estate_owners".
@@ -48,7 +48,7 @@ class UsersRates extends \yii\db\ActiveRecord
             [['user_id', 'rate_id'], 'required'],
             [['user_id', 'rate_id'], 'default', 'value' => null],
             [['user_id', 'rate_id'], 'integer'],
-            [['rate_id'], 'exist', 'skipOnError' => true, 'targetClass' => Rates::className(), 'targetAttribute' => ['rate_id' => 'id']],
+            [['rate_id'], 'exist', 'skipOnError' => true, 'targetClass' => Rate::className(), 'targetAttribute' => ['rate_id' => 'id']],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
         ];
     }
@@ -70,7 +70,7 @@ class UsersRates extends \yii\db\ActiveRecord
      */
     public function getRate()
     {
-        return $this->hasOne(Rates::className(), ['id' => 'rate_id']);
+        return $this->hasOne(Rate::className(), ['id' => 'rate_id']);
     }
 
     /**

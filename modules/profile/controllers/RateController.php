@@ -8,8 +8,8 @@ use yii\helpers\ArrayHelper;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\AccessControl;
-use app\modules\profile\models\Rates;
-use app\modules\profile\models\RatesSearch;
+use app\modules\profile\models\Rate;
+use app\modules\profile\models\RateSearch;
 use app\modules\profile\models\UsersRates;
 use app\modules\profile\models\RateCategories;
 use app\modules\profile\models\Jkhproduct;
@@ -68,7 +68,7 @@ class RateController extends Controller
      */
     public function actionIndex()
     {
-        $searchModel = new RatesSearch();
+        $searchModel = new RateSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
@@ -97,7 +97,7 @@ class RateController extends Controller
      */
     public function actionCreate()
     {
-        $ratesModel= new Rates();
+        $ratesModel= new Rate();
         $jkhproductsSearchModel = new JkhproductSearch();
         $jkhproducts = $jkhproductsSearchModel->search(Yii::$app->request->queryParams)->getModels();
         $productsItems = ArrayHelper::map($jkhproducts, 'id', 'name');
@@ -154,12 +154,12 @@ class RateController extends Controller
      * Finds the Rates model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
-     * @return Rates the loaded model
+     * @return Rate the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = Rates::findOne($id)) !== null) {
+        if (($model = Rate::findOne($id)) !== null) {
             return $model;
         }
 

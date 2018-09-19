@@ -3,12 +3,13 @@
 namespace app\modules\profile\models;
 
 use Yii;
+use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
 use yii\db\Query;
 use yii\data\ActiveDataProvider;
 use app\models\UserCustom;
 use app\modules\profile\models\EstateProduct;
-use app\modules\profile\models\Rates;
+use app\modules\profile\models\Rate;
 use yii\behaviors\BlameableBehavior;
 
 /**
@@ -87,17 +88,15 @@ class Estate extends ActiveRecord
 
 
     public function getEstateProducts($productType) {
-        $query =  new Query();
-        $query->select([
-            'jp.*'
-        ])
-            ->from('jkh_product jp')
-            ->innerJoin('estate_product ep', 'ep.product_id = jp.id and ep.estate_id = '.$this->id)
+        $query = EstateProduct::find()
+            ->innerJoin('jkh_product jp', 'estate_product.product_id = jp.id and estate_product.estate_id = '.$this->id)
             ->where(['jp.type' => $productType]);
+        return new ActiveDataProvider(['query'  => $query]);
+    }
 
-        return new ActiveDataProvider([
-            'query' => $query
-        ]);
+    public function getUserEstate() {
+        $query = new Query();
+        return $query->select(['name'])->from('estate')->where(['user_id' => Yii::$app->user->id])->indexBy('id')->column();
     }
 
     public function getEstateBills() {

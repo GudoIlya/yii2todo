@@ -7,7 +7,7 @@ use yii\data\ActiveDataProvider;
 use yii\db\ActiveRecord;
 
 use app\modules\profile\models\Estate;
-use app\modules\profile\models\Rates;
+use app\modules\profile\models\Rate;
 use app\modules\profile\models\EstateProduct;
 
 class UserCustom extends BaseUser{

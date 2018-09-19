@@ -2,18 +2,20 @@
 
 namespace app\modules\profile\controllers;
 
+use app\modules\profile\models\JkhproductSearch;
+use app\modules\profile\models\RateSearch;
 use Yii;
+use yii\helpers\ArrayHelper;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\AccessControl;
 
-use app\modules\profile\models\UsersResources;
-use app\modules\profile\models\UsersResourcesSearch;
-use app\modules\profile\models\UsersServices;
-use app\modules\profile\models\UsersServicesSearch;
 use app\models\UserCustom;
 use app\modules\profile\models\Estate;
 use app\modules\profile\models\EstateProduct;
+use app\modules\profile\models\EstateProductSearch;
+use app\modules\profile\models\Jkhproduct;
+
 /**
  * UsersServicesController implements the CRUD actions for UsersServices model.
  */
@@ -33,7 +35,7 @@ class EstateproductController extends Controller
                         'actions' => ['view'],
                         'allow'  => true,
                         'matchCallback' => function($rule, $action) {
-                            if( isset(Yii::$app->user->identity) && Yii::$app->user->identity->isAdmin || $this->isUserOwner() ) {
+                            if( isset(Yii::$app->user->identity) && Yii::$app->user->identity->isAdmin || ($this->isProductOwner() && $this->isEstateOwner()) ) {
                                 return true;
                             }
                             return false;
@@ -43,7 +45,7 @@ class EstateproductController extends Controller
                         'actions' => ['update', 'delete'],
                         'allow'   => true,
                         'matchCallback' => function($rule, $action) {
-                            if( $this->isUserOwner() ) {
+                            if( $this->isProductOwner() && $this->isEstateOwner() ) {
                                 return true;
                             }
                             return false;
@@ -59,17 +61,24 @@ class EstateproductController extends Controller
      * @return bool
      * @throws NotFoundHttpException
      */
-    protected function isUserOwner() {
-        return $this->findModel(Yii::$app->request->get('id'))->user_id == Yii::$app->user->id;
+    protected function isProductOwner() {
+        $estateProductModel = $this->findModel(Yii::$app->request->get('id'));
+        $jkhProductModel = Jkhproduct::findOne($estateProductModel->product_id);
+        return $jkhProductModel->user_id == Yii::$app->user->id;
     }
 
+    protected function isEstateOwner() {
+        $estateProductModel = $this->findModel(Yii::$app->request->get('id'));
+        $estateModel = Estate::findOne($estateProductModel->estate_id);
+        return $estateModel->user_id == Yii::$app->user->id;
+    }
     /**
      * Lists all UsersServices models.
      * @return mixed
      */
     public function actionIndex()
     {
-        $searchModel = new UsersResourcesSearch();
+        $searchModel = new EstateProductSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
@@ -98,12 +107,15 @@ class EstateproductController extends Controller
      */
     public function actionCreate()
     {
-        $model = new UsersResources();
+        $model = new EstateProduct();
         $model->load(Yii::$app->request->get(), '');
+
         $estateModel = new Estate();
-        $resourceItems = $model->getResourceOptions();
-        $rateItems = $model->getRatesOptions();
-        $userEstatesList = $estateModel->getEstateOptions();
+        $estateItems = $estateModel->getUserEstate();
+        $jkhProductSearch = new JkhproductSearch();
+        $productItems = ArrayHelper::map($jkhProductSearch->getJkhProductModels(), 'id', 'name');
+        $rateItemsModel = new RateSearch();
+        $rateItems = ArrayHelper::map($rateItemsModel->getRatesModels(), 'id', 'name');
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
@@ -111,9 +123,9 @@ class EstateproductController extends Controller
 
         return $this->render('create', [
             'model' => $model,
-            'resourceItems' => $resourceItems,
-            'rateItems' => $rateItems,
-            'estateItems' => $userEstatesList
+            'estateItems' => $estateItems,
+            'productItems' => $productItems,
+            'rateItems' => $rateItems
         ]);
     }
 

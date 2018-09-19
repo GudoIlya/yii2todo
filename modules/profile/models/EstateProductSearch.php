@@ -2,16 +2,15 @@
 
 namespace app\modules\profile\models;
 
-use app\models\UserCustom;
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use app\modules\profile\models\Rates;
+use app\modules\profile\models\EstateProduct;
 
 /**
- * RatesSearch represents the model behind the search form of `app\modules\bills\models\Rates`.
+ * UsersResourcesSearch represents the model behind the search form of `app\modules\bills\models\UsersResources`.
  */
-class RatesSearch extends Rates
+class EstateProductSearch extends EstateProduct
 {
     /**
      * {@inheritdoc}
@@ -19,11 +18,8 @@ class RatesSearch extends Rates
     public function rules()
     {
         return [
-            [['id', 'product_id'], 'integer'],
-            [['name', 'price', 'unit', 'date_create'], 'safe'],
-            [['price'], 'number'],
-            [['unit'], 'string', 'max' => 100],
-            [['product_id'], 'exist', 'skipOnError' => true, 'targetClass' => Jkhproduct::className(), 'targetAttribute' => ['product_id' => 'id']]
+            [['id', 'estate_id', 'product_id', 'rate_id'], 'integer'],
+            [['default_value', 'date_create'], 'safe'],
         ];
     }
 
@@ -45,8 +41,7 @@ class RatesSearch extends Rates
      */
     public function search($params)
     {
-        $query = Rates::find()
-        ->innerJoin('jkh_product jp', 'jp.id = rate.id AND jp.user_id = '.UserCustom::getUserId());
+        $query = EstateProduct::find();
 
         // add conditions that should always apply here
 
@@ -65,13 +60,10 @@ class RatesSearch extends Rates
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
-            'unit' => $this->unit,
-            'date_create' => $this->date_create,
-            'product_id' => $this->product_id
+            'estate_id' => $this->estate_id,
+            'product_id' => $this->product_id,
+            'rate_id' => $this->rate_id,
         ]);
-
-        $query->andFilterWhere(['ilike', 'rate.name', $this->name]);
-        $query->andFilterWhere(['>', 'rate.price', $this->price]);
 
         return $dataProvider;
     }

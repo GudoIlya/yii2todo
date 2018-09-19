@@ -8,7 +8,7 @@ use yii\behaviors\TimestampBehavior;
 use yii\behaviors\BlameableBehavior;
 use dektrium\user\models\User;
 use app\models\UserCustom;
-use app\modules\profile\models\Rates;
+use app\modules\profile\models\Rate;
 
 /**
  * This is the model class for table "users_resources".
@@ -64,7 +64,7 @@ class UsersResources extends ActiveRecord
             [['estate_id', 'resource_id', 'user_id'],'unique', 'targetAttribute' => ['user_id', 'resource_id', 'estate_id']],
             [['resource_id'], 'exist', 'skipOnError' => true, 'targetClass' => Resources::className(), 'targetAttribute' => ['resource_id' => 'id']],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
-            [['current_rate'], 'exist', 'skipOnError' => true, 'targetClass' => Rates::className(), 'targetAttribute' => ['current_rate' => 'id']],
+            [['current_rate'], 'exist', 'skipOnError' => true, 'targetClass' => Rate::className(), 'targetAttribute' => ['current_rate' => 'id']],
             [['estate_id'], 'exist', 'skipOnError' => true, 'targetClass' => Estate::className(), 'targetAttribute' => ['estate_id' => 'id']]
         ];
     }
@@ -92,7 +92,7 @@ class UsersResources extends ActiveRecord
     }
 
     public function getRate() {
-        return $this->hasOne(Rates::className(), ['id' => 'current_rate']);
+        return $this->hasOne(Rate::className(), ['id' => 'current_rate']);
     }
 
     /**
@@ -108,7 +108,7 @@ class UsersResources extends ActiveRecord
     }
 
     public function getRatesOptions() {
-        return Rates::find()->where(['user_id' => Yii::$app->user->identity->getId(), 'category_id' => 3])->select(['concat(name,\', ценой \', price) as name'])->indexBy('id')->column();
+        return Rate::find()->where(['user_id' => Yii::$app->user->identity->getId(), 'category_id' => 3])->select(['concat(name,\', ценой \', price) as name'])->indexBy('id')->column();
     }
 
 }

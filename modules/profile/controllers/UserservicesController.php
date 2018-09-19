@@ -9,7 +9,7 @@ use yii\web\NotFoundHttpException;
 use yii\filters\AccessControl;
 
 use app\modules\profile\models\ServicesSearch;
-use app\modules\profile\models\Rates;
+use app\modules\profile\models\Rate;
 use app\modules\profile\models\Services;
 use app\modules\profile\models\UsersServices;
 use app\modules\profile\models\UsersServicesSearch;
