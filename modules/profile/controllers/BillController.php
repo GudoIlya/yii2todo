@@ -59,7 +59,8 @@ class BillController extends Controller
      * @throws NotFoundHttpException
      */
     protected function isUserOwner() {
-        return $this->findModel(Yii::$app->request->get('id'))->user_id == Yii::$app->user->id;
+        $userId = $this->findModel(Yii::$app->request->get('id'))->getEstate()->one()->user_id;
+        return $userId == Yii::$app->user->id;
     }
 
 
@@ -245,7 +246,7 @@ class BillController extends Controller
     {
         $this->findModel($id)->delete();
 
-        return $this->redirect(['/profile/bills']);
+        return $this->redirect(['/profile/bill']);
     }
 
     /**

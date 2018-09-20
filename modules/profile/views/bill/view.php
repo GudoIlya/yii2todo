@@ -16,11 +16,11 @@ $this->params['breadcrumbs'][] = $this->title;
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a('Delete', ['delete', 'id' => $model->id], [
+        <?= Html::a('Изменить', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
+        <?= Html::a('Удалить', ['delete', 'id' => $model->id], [
             'class' => 'btn btn-danger',
             'data' => [
-                'confirm' => 'Are you sure you want to delete this item?',
+                'confirm' => 'Вы уверены, что хотите удалить счет?',
                 'method' => 'post',
             ],
         ]) ?>
@@ -62,25 +62,21 @@ $this->params['breadcrumbs'][] = $this->title;
                         }
                     ],
                     [
-                        'label' => 'Описание',
-                        'content' => function($data) {
-                            return $data->getEstateProduct()->one()->getJkhProduct()->one()->description;
-                        }
-                    ],
-                    [
                         'label' => 'Тариф',
                         'content' => function($data) {
                             $rate = $data->getRate()->one();
-                            return Html::a($rate->name, [
+                            return Html::a($rate->name.', ценой '.$rate->price.' за '.$rate->unit, [
                                 '/profile/rate/update', 'id' => $rate->id
                             ]);
                         }
                     ],
+                    'quantity',
                     [
-                        'label' => 'Цена',
+                        'label' => 'Стоимость',
                         'content' => function($data) {
                             $rate = $data->getRate()->one();
-                            return $rate->price.' '.$rate->unit;
+                            $total = $rate->price*$data->quantity;
+                            return $total;
                         }
                     ],
                     ['class' => 'yii\grid\ActionColumn',
@@ -124,21 +120,21 @@ $this->params['breadcrumbs'][] = $this->title;
                         }
                     ],
                     [
-                        'label' => 'Описание',
-                        'content' => function($data) {
-                            return $data->getEstateProduct()->one()->getJkhProduct()->one()->description;
-                        }
-                    ],
-                    [
                         'label' => 'Тариф',
                         'content' => function($data) {
-                            return $data->getRate()->one()->name;
+                            $rate = $data->getRate()->one();
+                            return Html::a($rate->name.', ценой '.$rate->price.' за '.$rate->unit, [
+                                '/profile/rate/update', 'id' => $rate->id
+                            ]);
                         }
                     ],
+                    'quantity',
                     [
-                        'label' => 'Цена',
+                        'label' => 'Стоимость',
                         'content' => function($data) {
-                            return $data->getRate()->one()->price;
+                            $rate = $data->getRate()->one();
+                            $total = $rate->price*$data->quantity;
+                            return $total;
                         }
                     ],
 
