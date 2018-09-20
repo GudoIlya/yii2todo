@@ -2,7 +2,13 @@
 
 namespace app\modules\profile\controllers;
 
+use app\modules\profile\models\BillProduct;
+use app\modules\profile\models\JkhResource;
+use app\modules\profile\models\JkhService;
 use Yii;
+use yii\base\Model;
+use yii\db\Transaction;
+use yii\web\BadRequestHttpException;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\AccessControl;
@@ -21,7 +27,7 @@ class BillController extends Controller
             'access' => [
                 'class' => AccessControl::className(),
                 'rules' => [
-                    ['actions' => ['index', 'create'], 'allow' => true, 'roles' => ['@']],
+                    ['actions' => ['index', 'create', 'preparebill'], 'allow' => true, 'roles' => ['@']],
                     [
                         'actions' => ['view'],
                         'allow'  => true,
@@ -104,6 +110,104 @@ class BillController extends Controller
         return $this->render('create', [
             'model' => $model,
             'estateItems' => $estateItems
+        ]);
+    }
+
+    /**
+     * 1. Дожлен быть создан новый счет
+     * 2. К счету должны быть сразу добавлены существующие продукты, которые подключены к недвижимости
+     * 3. (opt) нужно сделать так, чтобы учитывались предыдущие значения показаний. Для этого надо ссылаться на предыдущий счет
+     *
+     * @return string|\yii\web\Response
+     * @throws BadRequestHttpException
+     * @throws \yii\db\Exception
+     */
+    public function actionPreparebill() {
+        if(!Yii::$app->request->get('estate_id')){
+            return $this->redirect(Yii::$app->homeUrl);
+        }
+        $billModel = new Bill();
+        $billProducts = array();
+        $billResources = array();
+        $billServices = array();
+        $billModel->load(Yii::$app->request->get(), '');
+        $estate = $billModel->getEstate()->one();
+                // Услуги
+        $services = $estate->getEstateProducts(JkhService::TYPE);
+        $servicesModels = $services->getModels();
+        if($servicesModels) {
+            foreach($servicesModels as $i => $serviceModel) {
+                $newModel = new BillProduct();
+                $newModel->estate_product_id = $serviceModel->id;
+                $billServices[] = $newModel;
+            }
+        }
+
+        // Ресурсы
+        $resources = $estate->getEstateProducts(JkhResource::TYPE);
+        $resourcesModels = $resources->getModels();
+        if($resourcesModels) {
+            foreach ($resourcesModels as $i => $resourceModel) {
+                $newModel = new BillProduct();
+                $newModel->estate_product_id = $resourceModel->id;
+                $billResources[] = $newModel;
+            }
+        }
+
+        if(Yii::$app->request->isPost) {
+            $billModel->load(Yii::$app->request->post());
+
+            $billProductsPost = Yii::$app->request->post('BillProduct', []);
+
+            foreach($billProductsPost['services'] as $i => $data) {
+                if(!isset($billServices[$i])) {
+                    $billServices[$i] = new BillProduct();
+                }
+                $billServices[$i]->load($data, '');
+                $billProducts[] = $billServices[$i];
+            }
+
+            foreach($billProductsPost['resources'] as $i => $data) {
+                if(!isset($billResources[$i])) {
+                    $billResources[$i] = new BillProduct();
+                }
+                $billResources[$i]->load($data, '');
+                $billProducts[] = $billResources[$i];
+            }
+
+            $transaction = Yii::$app->db->beginTransaction(
+                Transaction::SERIALIZABLE
+            );
+
+            try {
+                $valid = $billModel->validate();
+                if($valid) {
+                    $billModel->save(false);
+                    foreach ($billProducts as $i => $billProduct) {
+                        $billProducts[$i]->bill_id = $billModel->id;
+                    }
+                    $valid = Model::validateMultiple($billProducts);
+                    if($valid) {
+                        foreach ($billProducts as $billProduct) {
+                            $billProduct->save(false);
+                        }
+                        $transaction->commit();
+                        return $this->redirect(['/profile/bill/view', 'id'=>$billModel->id]);
+                    } else {
+                        $transaction->rollBack();
+                    }
+                }
+            } catch (\Exception $e) {
+                $transaction->rollBack();
+                throw new BadRequestHttpException($e->getMessage(), 0, $e);
+            }
+
+        }
+
+        return $this->render('prepareBill', [
+            'billModel' => $billModel,
+            'resourcesModels' => $billResources,
+            'servicesModels' => $billServices
         ]);
     }
 

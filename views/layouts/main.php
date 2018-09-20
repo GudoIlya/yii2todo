@@ -38,34 +38,32 @@ AppAsset::register($this);
     echo Nav::widget([
         'options' => ['class' => 'navbar-nav navbar-right'],
         'items' => [
-            ['label' => 'Home', 'url' => ['/site/index']],
-            ['label' => 'Jkhproducts', 'url' => ['/profile/jkhproduct']],
-            ['label' => 'Profile',
+            ['label' => 'Продукты', 'url' => ['/profile/jkhproduct']],
+            ['label' => 'Профиль',
                 'items' => [
-                        ['label' => 'Общая информация', 'url' => ['/profile']],
-                        ['label' => 'Недвижимость пользователя', 'url' => ['/profile/estate']],
-                        ['label' => 'Ресурсы пользователя', 'url' => ['/profile/userresources']],
-                        ['label' => 'Услуги пользователя', 'url' => ['/profile/userservices']],
-                        ['label' => 'Мои тарифы', 'url' => ['/profile/rate']]
+                        ['label' => 'Общая', 'url' => ['/profile']],
+                        ['label' => 'Моя недвижимость', 'url' => ['/profile/estate']],
+                        ['label' => 'Мои тарифы', 'url' => ['/profile/rate']],
+                        ['label' => 'Мои счета', 'url' => ['/profile/bill']]
                 ]
             ],
             ( isset(Yii::$app->user->identity) ? (['label' => 'Tasks', 'url' => ['/task/index']]) : '' ),
             (isset(Yii::$app->user->identity) && Yii::$app->user->identity->isAdmin) ? (
-                    ['label' => 'AdminPanel', 'url' => ['/admin']]
+                    ['label' => 'Админ', 'url' => ['/admin']]
             ) : '',
             Yii::$app->user->isGuest ? (
-                ['label' => 'Login', 'url' => ['/user/security/login']]
+                ['label' => 'Войти', 'url' => ['/user/security/login']]
             ) : (
                 '<li>'
                 . Html::beginForm(['/user/security/logout'], 'post')
                 . Html::submitButton(
-                    'Logout (' . Yii::$app->user->identity->username . ')',
+                    'Выйти (' . Yii::$app->user->identity->username . ')',
                     ['class' => 'btn btn-link logout']
                 )
                 . Html::endForm()
                 . '</li>'
             ),
-            ['label' => 'Register', 'url' => ['/user/registration/register'], 'visible' => Yii::$app->user->isGuest]
+            ['label' => 'Регистрация', 'url' => ['/user/registration/register'], 'visible' => Yii::$app->user->isGuest]
         ],
     ]);
     NavBar::end();

@@ -22,7 +22,10 @@ $this->params['breadcrumbs'][] = $this->title;
     </ul>
     <div class="tab-content">
         <div id="bills" class="tab-pane fade">
-            <p><?= Html::a('Добавить Cчет', ['/profile/bill/create', 'estate_id' => $model->id], ['class' => 'btn btn-success']) ?></p>
+            <p>
+                <?= Html::a('Добавить Cчет', ['/profile/bill/create', 'estate_id' => $model->id], ['class' => 'btn btn-success']) ?>
+                <?= Html::a('Cформировать новый Cчет', ['/profile/bill/preparebill', 'estate_id' => $model->id], ['class' => 'btn btn-success']) ?>
+            </p>
             <?= GridView::widget([
                     'dataProvider' => $model->getBillsDP(),
                     'columns' => [
@@ -53,7 +56,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     [
                         'label' => 'Наименование',
                         'content' => function($data) {
-                            $service = $data->getJkhProduct()->one()->getService()->one();
+                            $service = $data->getJkhProduct()->one();
                             return Html::a($service->name, [
                                 '/profile/estateproduct/view', 'id' => $data->id
                             ]);
@@ -62,7 +65,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     [
                         'label' => 'Описание',
                         'content' => function($data) {
-                            return $data->getJkhProduct()->one()->getService()->one()->description;
+                            return $data->getJkhProduct()->one()->description;
                         }
                     ],
                     [
@@ -115,7 +118,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     [
                         'label' => 'Наименование',
                         'content' => function($data) {
-                            $resource = $data->getJkhProduct()->one()->getResource()->one();
+                            $resource = $data->getJkhProduct()->one();
                             return Html::a($resource->name, [
                                 '/profile/estateproduct/view', 'id' => $data->id
                             ]);
@@ -124,7 +127,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     [
                         'label' => 'Описание',
                         'content' => function($data) {
-                            return $data->getJkhProduct()->one()->getResource()->one()->description;
+                            return $data->getJkhProduct()->one()->description;
                         }
                     ],
                     [

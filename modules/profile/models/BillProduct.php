@@ -37,6 +37,7 @@ class BillProduct extends ActiveRecord
             [['bill_id', 'estate_product_id', 'rate_id', 'quantity', 'current_counter_value'], 'required'],
             [['bill_id', 'estate_product_id', 'rate_id'], 'integer'],
             [['quantity'], 'number'],
+            [['bill_id', 'estate_product_id'], 'unique', 'targetAttribute' => ['bill_id', 'estate_product_id']],
             [['bill_id'], 'exist', 'skipOnError' => true, 'targetClass' => Bill::className(), 'targetAttribute' => ['bill_id' => 'id']],
             [['rate_id'], 'exist', 'skipOnError' => true, 'targetClass' => Rate::className(), 'targetAttribute' => ['rate_id' => 'id']],
             [['estate_product_id'], 'exist', 'skipOnError' => true, 'targetClass' => EstateProduct::className(), 'targetAttribute' => ['estate_product_id' => 'id']],
@@ -53,7 +54,7 @@ class BillProduct extends ActiveRecord
             'bill_id' => 'Счет',
             'rate_id' => 'Тариф',
             'estate_product_id' => 'Товар',
-            'quantity' => 'Quantity',
+            'quantity' => 'Кол-во',
             'total' => 'Итог',
             'current_counter_value' => 'Значение счетчика'
         ];

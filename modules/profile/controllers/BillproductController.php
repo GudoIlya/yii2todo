@@ -55,7 +55,7 @@ class BillproductController extends Controller
      * @throws NotFoundHttpException
      */
     protected function isUserOwner() {
-        $estateOwnerId = $this->findModel(Yii::$app->request->get('id'))->getBill()->getEstate()->one()->user_id;
+        $estateOwnerId = $this->findModel(Yii::$app->request->get('id'))->getBill()->one()->getEstate()->one()->user_id;
         return $estateOwnerId == Yii::$app->user->id;
     }
 
@@ -100,7 +100,7 @@ class BillproductController extends Controller
         $productItems = Bill::findOne($model->bill_id)->getEstate()->one()->getEstateProductOptions(Yii::$app->request->get('type'));
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(Yii::$app->request->referrer ?: Yii::$app->homeUrl);
+            return $this->redirect(['/profile/bill/view', 'id' => $model->bill_id]);
         }
 
         return $this->render('create', [
@@ -141,9 +141,11 @@ class BillproductController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
+        $billproduct = $this->findModel($id);
+        $bill_id = $billproduct->bill_id;
+        $billproduct->delete();
 
-        return $this->redirect(['/profile/bill']);
+        return $this->redirect(['/profile/bill/view', 'id' => $bill_id]);
     }
 
     /**

@@ -6,8 +6,8 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model app\modules\bills\models\Services */
 
-$this->title = 'Create Services';
-$this->params['breadcrumbs'][] = ['label' => 'Счета', 'url' => ['/profile/estate']];
+$this->title = 'Добавление продукта';
+$this->params['breadcrumbs'][] = ['label' => 'Счет', 'url' => ['/profile/bill/view', 'id'=>$model->bill_id]];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="services-create">

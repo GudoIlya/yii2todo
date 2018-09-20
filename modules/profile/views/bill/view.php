@@ -55,7 +55,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     [
                         'label' => 'Наименование',
                         'content' => function($data) {
-                            $service = $data->getEstateProduct()->one()->getJkhProduct()->one()->getService()->one();
+                            $service = $data->getEstateProduct()->one()->getJkhProduct()->one();
                             return Html::a($service->name, [
                                 '/profile/estateproduct/view', 'id' => $data->id
                             ]);
@@ -64,7 +64,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     [
                         'label' => 'Описание',
                         'content' => function($data) {
-                            return $data->getEstateProduct()->one()->getJkhProduct()->one()->getService()->one()->description;
+                            return $data->getEstateProduct()->one()->getJkhProduct()->one()->description;
                         }
                     ],
                     [
@@ -117,7 +117,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     [
                         'label' => 'Наименование',
                         'content' => function($data) {
-                            $resource = $data->getJkhProduct()->one()->getResource()->one();
+                            $resource = $data->getEstateProduct()->one()->getJkhProduct()->one();
                             return Html::a($resource->name, [
                                 '/profile/estateproduct/view', 'id' => $data->id
                             ]);
@@ -126,7 +126,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     [
                         'label' => 'Описание',
                         'content' => function($data) {
-                            return $data->getJkhProduct()->one()->getResource()->one()->description;
+                            return $data->getEstateProduct()->one()->getJkhProduct()->one()->description;
                         }
                     ],
                     [

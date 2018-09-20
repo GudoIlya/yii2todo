@@ -25,12 +25,22 @@ $this->params['breadcrumbs'][] = $this->title;
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
-            'id',
-            'bill-number',
-            'date',
-            'services_summ',
-            'resources_summ',
-            //'is_paid:boolean',
+            [
+                    'attribute' => 'billnumber',
+                    'content' => function($data) {
+                        return Html::a($data->billnumber, ['/profile/bill/view', 'id' => $data->id]);
+                    }
+            ],
+            'total:currency',
+            [
+                    'label' => 'Недвижимость',
+                    'content' => function($data) {
+                        $estate = $data->getEstate()->one();
+                        return Html::a($estate->name, ['/profile/estate/view', 'id' => $data->id]);
+                    }
+            ],
+            'is_paid:boolean',
+            'date_pay:date',
 
             ['class' => 'yii\grid\ActionColumn'],
         ],

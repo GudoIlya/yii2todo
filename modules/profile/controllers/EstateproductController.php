@@ -118,7 +118,7 @@ class EstateproductController extends Controller
         $rateItems = ArrayHelper::map($rateItemsModel->getRatesModels()->getModels(), 'id', 'name');
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+            return $this->redirect(['/profile/estate/view', 'id' => $model->estate_id]);
         }
 
         return $this->render('create', [

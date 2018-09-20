@@ -13,7 +13,7 @@ use dektrium\user\models\User;
  * This is the model class for table "bills".
  *
  * @property int $id
- * @property string $bill-number
+ * @property string $billnumber
  * @property string $date
  * @property double $services_summ
  * @property double $resources_summ
@@ -54,7 +54,7 @@ class Bill extends ActiveRecord
     public function rules()
     {
         return [
-            [['billnumber', 'estate_id', 'is_paid', 'date_pay'], 'required'],
+            [['billnumber', 'estate_id', 'date_pay'], 'required'],
             [['estate_id'], 'integer'],
             [['billnumber'], 'string', 'max' => 100],
             [['total'], 'number'],

@@ -67,11 +67,11 @@ class BillSearch extends Bill
         // grid filtering conditions
         $query->andFilterWhere([
             'estate_id' => $this->estate_id,
-            'total' => 'total',
+            'total' => $this->total,
             'is_paid' => $this->is_paid,
         ]);
 
-        $query->andFilterWhere(['ilike', 'billnumber', $this->bill-number]);
+        $query->andFilterWhere(['ilike', 'billnumber', $this->billnumber]);
 
         return $dataProvider;
     }

@@ -24,9 +24,6 @@ class JkhService extends Jkhproduct {
         return parent::beforeSave($insert);
     }
 
-    public function getService() {
-        return self::find();
-    }
 
     public function getRates() {
         return self::find()->innerJoin('rate', 'id = rate.id');

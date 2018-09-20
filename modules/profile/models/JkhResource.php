@@ -24,10 +24,6 @@ class JkhResource extends Jkhproduct {
         return parent::beforeSave($insert);
     }
 
-    public function getResource() {
-        return self::find();
-    }
-
     public function getRates() {
         return self::find()->innerJoin('rate', 'id = rate.id');
     }

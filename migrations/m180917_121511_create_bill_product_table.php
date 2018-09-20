@@ -33,7 +33,7 @@ class m180917_121511_create_bill_product_table extends Migration
             'fk-bill-product-estate_product_id',
             'bill_product',
             'estate_product_id',
-            'jkh_product',
+            'estate_product',
             'id',
             'cascade'
         );
