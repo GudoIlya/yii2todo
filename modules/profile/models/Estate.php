@@ -94,6 +94,13 @@ class Estate extends ActiveRecord
         return new ActiveDataProvider(['query'  => $query]);
     }
 
+    public function getEstateProductsByEstateId($estate_id, $productType) {
+        $query = EstateProduct::find()
+            ->innerJoin('jkh_product jp', 'estate_product.product_id = jp.id and estate_product.estate_id = '.$estate_id)
+            ->where(['jp.type' => $productType]);
+        return $query->all();
+    }
+
     public function getEstateProductOptions($productType) {
         return EstateProduct::find()
             ->innerJoin('jkh_product jp', 'estate_product.product_id = jp.id and estate_product.estate_id = '.$this->id)

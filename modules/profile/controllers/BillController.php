@@ -2,6 +2,7 @@
 
 namespace app\modules\profile\controllers;
 
+use app\modules\profile\models\bill\BillForm;
 use app\modules\profile\models\BillProduct;
 use app\modules\profile\models\JkhResource;
 use app\modules\profile\models\JkhService;
@@ -123,7 +124,7 @@ class BillController extends Controller
      * @throws BadRequestHttpException
      * @throws \yii\db\Exception
      */
-    public function actionPreparebill() {
+    public function actionPreparebillOld() {
         if(!Yii::$app->request->get('estate_id')){
             return $this->redirect(Yii::$app->homeUrl);
         }
@@ -209,6 +210,17 @@ class BillController extends Controller
             'billModel' => $billModel,
             'resourcesModels' => $billResources,
             'servicesModels' => $billServices
+        ]);
+    }
+
+
+    public function actionPreparebill() {
+        $billForm = new BillForm(['estate_id' => Yii::$app->request->get('estate_id')]);
+        if($billForm->save()) {
+            return $this->redirect('/index');
+        }
+        return $this->render('prepareBillNew', [
+            'billForm' => $billForm
         ]);
     }
 
