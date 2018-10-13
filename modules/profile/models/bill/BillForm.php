@@ -9,6 +9,7 @@ use app\modules\profile\models\JkhService;
 use Yii;
 use yii\base\Model;
 use yii\behaviors\BlameableBehavior;
+use yii\db\Transaction;
 
 class BillForm extends Model {
 
@@ -21,26 +22,28 @@ class BillForm extends Model {
      * @property double $resources_summ
      * @property bool $is_paid
      *
-     * @property BillResources[] $billResources
-     * @property BillServices[] $billServices
+     * @property $services[] BillProduct
+     * @property $resources[] BillProduct
      */
 
-    public $billnumber;
-
+    /**
+     * @var integer
+     */
     public $estate_id;
 
-    public $date_pay;
+    /**
+     * @var Bill
+     */
+    public $bill;
 
-    public $date_create;
-
-    public $date_paid;
-
-    public $total;
-
-    public $is_paid;
-
+    /**
+     * @var BillProductForm
+     */
     public $services = [];
 
+    /**
+     * @var BillProduct
+     */
     public $resources = [];
 
     public function behaviors()
@@ -59,7 +62,7 @@ class BillForm extends Model {
    public function rules()
    {
        $rules = [
-           [['billnumber', 'date_pay', 'estate_id', 'services_summ', 'resources_summ'], 'required'],
+           [['billnumber', 'date_pay', 'estate_id'], 'required'],
            [['billnumber'], 'string', 'max' => 100],
            [['estate_id'], 'integer'],
            [['date_pay', 'date_paid', 'date_create'], 'safe'],
@@ -76,6 +79,7 @@ class BillForm extends Model {
    public function __construct(array $config = [])
    {
        parent::__construct($config);
+       $this->bill = new Bill(['estate_id' => $this->estate_id]);
        $this->setProducts();
    }
 
@@ -83,42 +87,36 @@ class BillForm extends Model {
        $services = Estate::getEstateProductsByEstateId($this->estate_id, JkhService::TYPE);
        foreach ($services as $service) {
            $this->services[] = new BillProductForm([
-               'estate_product_id' => $service->id,
-               'rate_id' => $service->rate_id
+               'estate_product' => $service
            ]);
        }
        $resources = Estate::getEstateProductsByEstateId($this->estate_id, JkhResource::TYPE);;
         foreach ($resources as $resource) {
             $this->resources[] = new BillProductForm([
-                'estate_product_id' => $resource->id,
-                'rate_id' => $resource->rate_id
+                'estate_product' => $resource
             ]);
         }
    }
 
    public function save() {
-       if(Yii::$app->request->isPost) {
-           $bill = new Bill();
            $transaction = Yii::$app->db->beginTransaction(
                Transaction::SERIALIZABLE
            );
-           $bill->load(Yii::$app->request->post());
            try {
-               $valid = $bill->validate();
-               if ($valid) {
-                   $bill->save(false);
-                   $billProducts = array_merge($this->services, $this->resources);
-                   foreach ($billProducts as $i => $billProduct) {
-                       $billProducts[$i]->bill_id = $bill->id;
+               $this->bill->validate();
+               if ($this->bill->save()) {
+                   $billProducts = [];
+                   foreach (array_merge($this->services, $this->resources) as $i => $productFormItem) {
+                       $productFormItem->billProduct->bill_id = $this->bill->id;
+                       $billProducts[$i] = $productFormItem->billProduct;
                    }
                    $valid = Model::validateMultiple($billProducts);
                    if ($valid) {
-                       foreach ($billProducts as $billProductForm) {
-                           $billProductObject = new BillProduct($billProductForm);
-                           $billProductObject->save();
+                       foreach ($billProducts as $billProduct) {
+                           $billProduct->save();
                        }
                        $transaction->commit();
-                       return $this->redirect(['/profile/bill/view', 'id' => $bill->id]);
+                       return $this->redirect(['/profile/bill/view', 'id' => $this->bill->id]);
                    } else {
                        $transaction->rollBack();
                        return false;
@@ -128,8 +126,18 @@ class BillForm extends Model {
                $transaction->rollBack();
                throw new BadRequestHttpException($e->getMessage(), 0, $e);
            }
-       }
        return false;
    }
+
+   public function load($data, $formName = null)
+   {
+       $load = parent::load($data, $formName);
+       $load = $this->bill->load($data, $formName) && $load;
+       $load = Model::loadMultiple(array_merge($this->services, $this->resources), $data['BillProductForm']);
+       $load = Model::loadMultiple($this->services, $data['BillProduct'], 'services') && $load;
+       $load = Model::loadMultiple($this->resources, $data['BillProduct'], 'resources') && $load;
+       return $load;
+   }
+
 
 }

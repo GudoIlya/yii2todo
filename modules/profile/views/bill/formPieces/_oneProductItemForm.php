@@ -17,10 +17,10 @@ $prefix = "[$index][$subindex]";
         <label for=""><?= $model->estate_product->getJkhProduct()->one()->name; ?></label>
     </td>
     <td>
-        <?= $form->field($model, $prefix.'quantity')->textInput(['value' => $model->estate_product->default_value, 'class' => 'form-control quantityHolder'])->label(''); ?>
+        <?= $form->field($model->billProduct, $prefix.'quantity')->textInput(['value' => $model->estate_product->default_value, 'class' => 'form-control quantityHolder'])->label(''); ?>
     </td>
     <td>
-        <?= $form->field($model, $prefix.'current_counter_value')->textInput()->label(''); ?>
+        <?= $form->field($model->billProduct, $prefix.'current_counter_value')->textInput()->label(''); ?>
     </td>
     <td>
         <h5 class="rateHolder"><?= $model->rate->price ?></h5>

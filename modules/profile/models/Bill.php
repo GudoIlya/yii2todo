@@ -15,8 +15,6 @@ use dektrium\user\models\User;
  * @property int $id
  * @property string $billnumber
  * @property string $date
- * @property double $services_summ
- * @property double $resources_summ
  * @property bool $is_paid
  *
  * @property BillResources[] $billResources
@@ -48,6 +46,11 @@ class Bill extends ActiveRecord
         return 'bill';
     }
 
+    public function __construct(array $config = [])
+    {
+        parent::__construct($config);
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -58,8 +61,8 @@ class Bill extends ActiveRecord
             [['estate_id'], 'integer'],
             [['billnumber'], 'string', 'max' => 100],
             [['total'], 'number'],
-            ['total', 'default', 'value' => false],
-            ['is_paid', 'default', 'value' => 0],
+            ['total', 'default', 'value' => 0],
+            ['is_paid', 'default', 'value' => false],
             [['is_paid'], 'boolean'],
             [['date_pay'], 'date'],
             [['billnumber', 'estate_id'], 'unique', 'targetAttribute' => ['billnumber', 'estate_id']],

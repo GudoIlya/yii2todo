@@ -22,16 +22,16 @@ $this->params['breadcrumbs'][] = $this->title;
 
             <?= Html::activeHiddenInput($billForm, 'estate_id'); ?>
 
-            <?= $form->field($billForm, 'billnumber')->textInput(['maxlength' => true]) ?>
+            <?= $form->field($billForm->bill, 'billnumber')->textInput(['maxlength' => true]) ?>
 
-            <?= $form->field($billForm, 'total')->textInput(['class' => 'totalHolder form-control']) ?>
+            <?= $form->field($billForm->bill, 'total')->textInput(['class' => 'totalHolder form-control']) ?>
 
-            <?= $form->field($billForm, 'date_pay')->widget(DatePicker::className(), [
+            <?= $form->field($billForm->bill, 'date_pay')->widget(DatePicker::className(), [
                 'options' => ['class' => 'form-control'],
                 'dateFormat' => 'd.MM.y'
             ]) ?>
-
         </fieldset>
+
         <table class="table">
             <thead>
             </thead>

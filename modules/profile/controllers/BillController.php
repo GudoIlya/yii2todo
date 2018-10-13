@@ -216,8 +216,11 @@ class BillController extends Controller
 
     public function actionPreparebill() {
         $billForm = new BillForm(['estate_id' => Yii::$app->request->get('estate_id')]);
-        if($billForm->save()) {
-            return $this->redirect('/index');
+        if(Yii::$app->request->isPost) {
+            $billForm->load(Yii::$app->request->post());
+            if($billForm->save()) {
+                return $this->redirect('/index');
+            }
         }
         return $this->render('prepareBillNew', [
             'billForm' => $billForm
