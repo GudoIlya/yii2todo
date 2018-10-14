@@ -38,7 +38,12 @@ AppAsset::register($this);
     echo Nav::widget([
         'options' => ['class' => 'navbar-nav navbar-right'],
         'items' => [
-            ['label' => 'Продукты', 'url' => ['/profile/jkhproduct']],
+            ['label' => 'Магазин',
+                'items' => [
+                    ['label' => 'Все категории', 'url' => ['/catalog/category/index']],
+                ]
+            ],
+            ['label' => 'Продукты жкх', 'url' => ['/profile/jkhproduct']],
             ['label' => 'Профиль',
                 'items' => [
                         ['label' => 'Общая', 'url' => ['/profile']],

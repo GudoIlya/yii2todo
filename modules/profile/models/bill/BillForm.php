@@ -10,6 +10,7 @@ use Yii;
 use yii\base\Model;
 use yii\behaviors\BlameableBehavior;
 use yii\db\Transaction;
+use yii\web\BadRequestHttpException;
 
 class BillForm extends Model {
 
@@ -116,7 +117,7 @@ class BillForm extends Model {
                            $billProduct->save();
                        }
                        $transaction->commit();
-                       return $this->redirect(['/profile/bill/view', 'id' => $this->bill->id]);
+                       return true;
                    } else {
                        $transaction->rollBack();
                        return false;

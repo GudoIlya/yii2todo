@@ -64,7 +64,7 @@ class Bill extends ActiveRecord
             ['total', 'default', 'value' => 0],
             ['is_paid', 'default', 'value' => false],
             [['is_paid'], 'boolean'],
-            [['date_pay'], 'date'],
+            [['date_pay'], 'date', 'format' => 'dd.MM.yyyy'],
             [['billnumber', 'estate_id'], 'unique', 'targetAttribute' => ['billnumber', 'estate_id']],
             [['estate_id'], 'exist', 'skipOnError' => true, 'targetClass' => Estate::className(), 'targetAttribute' => ['estate_id' => 'id']]
         ];

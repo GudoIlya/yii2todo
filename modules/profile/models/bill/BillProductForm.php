@@ -34,8 +34,8 @@ class BillProductForm extends Model {
     {
         parent::__construct($config);
         $this->rate_id = $this->estate_product->rate_id;
-        $this->billProduct = new BillProduct(['estate_product_id' => $this->estate_product_id, 'rate_id' => $this->rate_id]);
         $this->estate_product_id = $this->estate_product->id;
+        $this->billProduct = new BillProduct(['estate_product_id' => $this->estate_product_id, 'rate_id' => $this->rate_id]);
         $this->rate = $this->estate_product->getRate()->one();
         $this->jkhProduct = $this->estate_product->getJkhProduct()->one();
         $this->result = $this->rate->price * $this->billProduct->quantity;

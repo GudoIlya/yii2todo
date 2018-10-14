@@ -20,4 +20,11 @@ return [
     'profile' => [
         'class' => 'app\modules\profile\Module'
     ],
+    'catalog' => [
+        'class' => 'app\modules\catalog\Module'
+    ],
+    'yandexapi' => [
+        'class' => 'app\modules\yandexapi\Module',
+        'token' => 'c084076f-85f1-4f82-b595-0fd390342587'
+    ],
 ];

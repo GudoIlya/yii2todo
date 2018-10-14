@@ -1,6 +1,15 @@
 <?php
 
 return [
+    'migrate' => [
+        'class' => 'yii\console\controllers\MigrateController',
+        'migrationPath' => null,
+        'migrationNamespaces' => [
+            'app\migrations',
+            'vendor\dektrium\yii2-user\migrations',
+            'app\modules\catalog\migrations'
+        ]
+    ],
     'migrate-app' => [
         'class' => 'yii\console\controllers\MigrateController',
         'migrationNamespaces' => ['app\migrations'],
