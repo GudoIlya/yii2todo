@@ -16,7 +16,9 @@ class m180917_121331_create_jkh_product_table extends Migration
         $this->createTable('jkh_product', [
             'id' => $this->primaryKey(),
             'name' => $this->string(200)->notNull(),
-            'description' => $this->string(300)->null(),
+            'description' => $this->string(300)->null()->defaultValue(null),
+            'standard_value' => $this->float()->null()->comment('Нормати'),
+            'maintanence_end' => $this->date()->null()->comment('Окончание срока проверки - для счетчиков'),
             'type' => $this->string(100)->notNull(),
             'user_id' => $this->integer()->notNull()
         ]);
