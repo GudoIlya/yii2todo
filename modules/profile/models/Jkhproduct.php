@@ -48,6 +48,9 @@ class Jkhproduct extends ActiveRecord{
     {
         return [
             [['name', 'type', 'user_id'], 'required'],
+            [['standard_value'], 'number'],
+            [['standard_value', 'maintanence_end'], 'default', 'value' => null],
+            [['maintanence_end'], 'date', 'format' => 'dd.MM.yyyy'],
             [['name'], 'string', 'max' => 200],
             [['description'], 'string', 'max' => 300],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => UserCustom::className(), 'targetAttribute' => ['user_id' => 'id']],

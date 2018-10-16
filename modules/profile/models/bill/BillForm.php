@@ -135,6 +135,8 @@ class BillForm extends Model {
        $load = parent::load($data, $formName);
        $load = $this->bill->load($data, $formName) && $load;
        $load = Model::loadMultiple(array_merge($this->services, $this->resources), $data['BillProductForm']);
+       $load = Model::loadMultiple($this->services, $data['BillProduct'], 'services') && $load;
+       $load = Model::loadMultiple($this->resources, $data['BillProduct'], 'resources') && $load;
        return $load;
    }
 

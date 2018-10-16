@@ -13,6 +13,7 @@ use yii\db\ActiveRecord;
  * @property int $estate_product_id
  * @property int $rate_id
  * @property double $quantity
+ * @property double $last_counter_value
  *
  * @property Bill $bill
  * @property Rate $rate
@@ -36,7 +37,8 @@ class BillProduct extends ActiveRecord
         return [
             [['bill_id', 'estate_product_id', 'rate_id', 'quantity', 'current_counter_value'], 'required'],
             [['bill_id', 'estate_product_id', 'rate_id'], 'integer'],
-            [['quantity'], 'number'],
+            [['current_counter_value', 'last_counter_value', 'debt', 'penalties', 'quantity'], 'number'],
+            [['last_counter_value', 'debt', 'penalties'], 'default', 'value' => null],
             [['bill_id', 'estate_product_id'], 'unique', 'targetAttribute' => ['bill_id', 'estate_product_id']],
             [['bill_id'], 'exist', 'skipOnError' => true, 'targetClass' => Bill::className(), 'targetAttribute' => ['bill_id' => 'id']],
             [['rate_id'], 'exist', 'skipOnError' => true, 'targetClass' => Rate::className(), 'targetAttribute' => ['rate_id' => 'id']],
@@ -56,7 +58,10 @@ class BillProduct extends ActiveRecord
             'estate_product_id' => 'Товар',
             'quantity' => 'Кол-во',
             'total' => 'Итог',
-            'current_counter_value' => 'Значение счетчика'
+            'current_counter_value' => 'Текущее значение счетчика',
+            'last_counter_value' => 'Предыдущее значение счетчика',
+            'debt' => 'Долг',
+            'penalties' => 'Пени'
         ];
     }
 
@@ -88,5 +93,24 @@ class BillProduct extends ActiveRecord
     public function getEstateProduct()
     {
         return $this->hasOne(EstateProduct::className(), ['id' => 'estate_product_id']);
+    }
+
+    /**
+     * Проверяет current_counter_value для данного estate_product из предыдущего счета
+     * 1. Взять предыдущий счет
+     * 2. Из счета взять такой же billproduct
+     * 3. Взять значение счетчика
+     */
+    public function getLastCounterValue() {
+        if($this->isNewRecord) {
+            $billProductInfo = BillProduct::find()->alias('bp')
+                ->innerJoin(Bill::tableName()." bl", 'bl.id = bp.bill_id')
+                ->where("bp.estate_product_id = ".$this->estate_product_id)
+                ->orderBy('date_create')
+                ->one();
+            if($billProductInfo) {
+                $this->last_counter_value = isset($billProductInfo->current_counter_value) ? $billProductInfo->current_counter_value : null;
+            }
+        }
     }
 }

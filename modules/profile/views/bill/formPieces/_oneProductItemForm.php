@@ -17,10 +17,24 @@ $prefix = "[$index][$subindex]";
         <label for=""><?= $model->estate_product->getJkhProduct()->one()->name; ?></label>
     </td>
     <td>
+        <?php if(isset($this->standard_value)) {
+            $this->estate_product->default_value *=$this->standard_value;
+            ?>
+            Норматив - <?= $this->standard_value ?>
+        <?php } ?>
         <?= $form->field($model->billProduct, $prefix.'quantity')->textInput(['value' => $model->estate_product->default_value, 'class' => 'form-control quantityHolder'])->label(''); ?>
     </td>
     <td>
+        <?= $form->field($model->billProduct, $prefix.'last_counter_value')->textInput(['value' => isset($this->last_counter_value) ? $this->last_counter_value : null])->label(''); ?>
+    </td>
+    <td>
         <?= $form->field($model->billProduct, $prefix.'current_counter_value')->textInput()->label(''); ?>
+    </td>
+    <td>
+        <?= $form->field($model->billProduct, $prefix.'debt')->textInput()->label(''); ?>
+    </td>
+    <td>
+        <?= $form->field($model->billProduct, $prefix.'penalties')->textInput()->label(''); ?>
     </td>
     <td>
         <h5 class="rateHolder"><?= $model->rate->price ?></h5>
