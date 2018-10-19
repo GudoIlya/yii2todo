@@ -28,6 +28,13 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'default_value')->textInput(['maxlength' => true]); ?>
 
+    <?= $form->field($model, 'standard_value')->textInput(); ?>
+
+    <?= $form->field($model, 'maintanence_end')->widget(\yii\jui\DatePicker::className(), [
+        'options' => ['class' => 'form-control'],
+        'dateFormat' => 'd.MM.y'
+    ]) ?>
+
     <div class="form-group">
         <?= Html::submitButton('Сохранить', ['class' => 'btn btn-success']) ?>
     </div>

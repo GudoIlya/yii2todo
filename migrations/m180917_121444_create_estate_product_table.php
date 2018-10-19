@@ -20,6 +20,8 @@ class m180917_121444_create_estate_product_table extends Migration
             'product_id' => $this->integer()->notNull(),
             'rate_id' => $this->integer()->notNull(),
             'default_value' => $this->string()->notNull()->defaultValue('0'),
+            'standard_value' => $this->float()->null()->defaultValue(null)->comment('Норматив'),
+            'maintanence_end' => $this->date()->null()->defaultValue(null)->comment('Окончание срока проверки - для счетчиков'),
             'date_create' => $this->dateTime()
         ]);
 

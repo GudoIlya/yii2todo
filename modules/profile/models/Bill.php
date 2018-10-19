@@ -97,10 +97,15 @@ class Bill extends ActiveRecord
         return $this->hasMany(BillProduct::className(), ['bill_id' => 'id']);
     }
 
-    public function getBillProductsDP($products_type) {
+    public function getBillProductsDP($products_type = false) {
         $query = $this->getBillProducts()->alias('bp')
             ->innerJoin('estate_product ep', 'ep.id = bp.estate_product_id')
-            ->innerJoin('jkh_product jp', 'jp.id = ep.product_id AND jp.type = \''.$products_type.'\'');
+            ->innerJoin('jkh_product jp', 'jp.id = ep.product_id');
+        if(!empty($products_type)) {
+            $query->andWhere('jp.type = \''.$products_type.'\'');
+        } else {
+            $query->orderBy('jp.type');
+        }
         return new ActiveDataProvider(['query' => $query]);
     }
 

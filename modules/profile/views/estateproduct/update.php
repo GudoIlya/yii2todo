@@ -13,19 +13,17 @@ switch ($productType){
     case (\app\modules\profile\models\JkhResource::TYPE):
         $productTypeName = 'ресурс';
         $labelName = 'Мои ресурсы';
-        $typedProduct = $currentJkhProduct->getResource();
         break;
     case (\app\modules\profile\models\JkhService::TYPE):
         $productTypeName = 'услугу';
         $labelName = 'Мои услуги';
-        $typedProduct = $currentJkhProduct->getService();
         break;
 }
 
 
-$this->title = 'Обновить '.$productTypeName.': ' . $typedProduct->one()->name ;
+$this->title = 'Обновить '.$currentJkhProduct->name;
 $this->params['breadcrumbs'][] = ['label' => $labelName, 'url' => ['/profile/estateproduct', 'type' => $productType]];
-$this->params['breadcrumbs'][] = ['label' => $typedProduct->one()->name, 'url' => ['view', 'id' => $model->id]];
+$this->params['breadcrumbs'][] = ['label' => $currentJkhProduct->name, 'url' => ['view', 'id' => $model->id]];
 $this->params['breadcrumbs'][] = 'Обновить';
 ?>
 <div class="services-update">

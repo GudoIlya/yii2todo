@@ -18,7 +18,7 @@ class m180917_121511_create_bill_product_table extends Migration
             'estate_product_id' => $this->integer()->notNull(),
             'rate_id' => $this->integer()->notNull(),
             'quantity' => $this->float()->notNull(),
-            'current_counter_value' => $this->float()->notNull()->comment('Текущее показание счетчика'),
+            'current_counter_value' => $this->float()->null()->comment('Текущее показание счетчика'),
             'last_counter_value' => $this->float()->null()->comment('Предыдущее показание счетчика'),
             'debt' => $this->float()->null()->defaultValue(null)->comment('Долг в пределах данного счета'),
             'penalties' => $this->float()->null()->defaultValue(null)->comment('Пени в пределах данного счета')

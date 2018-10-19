@@ -35,7 +35,7 @@ class BillProduct extends ActiveRecord
     public function rules()
     {
         return [
-            [['bill_id', 'estate_product_id', 'rate_id', 'quantity', 'current_counter_value'], 'required'],
+            [['bill_id', 'estate_product_id', 'rate_id', 'quantity'], 'required'],
             [['bill_id', 'estate_product_id', 'rate_id'], 'integer'],
             [['current_counter_value', 'last_counter_value', 'debt', 'penalties', 'quantity'], 'number'],
             [['last_counter_value', 'debt', 'penalties'], 'default', 'value' => null],

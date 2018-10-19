@@ -36,6 +36,9 @@ class EstateProduct extends ActiveRecord {
             [['estate_id', 'product_id', 'rate_id'], 'required'],
             [['estate_id', 'product_id', 'rate_id'], 'integer'],
             [['default_value'], 'string'], // Пока что строка
+            [['standard_value'], 'number'],
+            [['standard_value', 'maintanence_end'], 'default', 'value' => null],
+            [['maintanence_end'], 'date', 'format' => 'dd.MM.yyyy'],
             [['estate_id'], 'exist', 'skipOnError' => true, 'targetClass' => Estate::className(), 'targetAttribute' => ['estate_id' => 'id']],
             [['product_id'], 'exist', 'skipOnError' => true, 'targetClass' => Jkhproduct::className(), 'targetAttribute' => ['product_id' => 'id']],
             [['rate_id'], 'exist', 'skipOnError' => true, 'targetClass' => Rate::className(), 'targetAttribute' => ['rate_id' => 'id']],
@@ -53,7 +56,9 @@ class EstateProduct extends ActiveRecord {
             'estate_id' => 'Недвижимость',
             'product_id' => 'Товар',
             'rate_id' => 'Тариф',
-            'default_value' => 'Норматив'
+            'default_value' => 'Объемы',
+            'standard_value' => 'Норматив',
+            'maintanence_end' => 'Окончание срока проверки (справочно)'
         ];
     }
 
