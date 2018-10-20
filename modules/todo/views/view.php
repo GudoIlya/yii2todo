@@ -6,8 +6,8 @@ use yii\widgets\DetailView;
 /* @var $this yii\web\View */
 /* @var $model app\modules\bills\models\Rates */
 
-$this->title = $model->task;
-$this->params['breadcrumbs'][] = ['label' => 'Тудушки', 'url' => ['index']];
+$this->title = $model->name;
+$this->params['breadcrumbs'][] = ['label' => 'Rates', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="rates-view">
@@ -23,14 +23,18 @@ $this->params['breadcrumbs'][] = $this->title;
                 'method' => 'post',
             ],
         ]) ?>
+        <?= Html::a('Добавить тариф', ['/profile/rate/create', 'product_id' => $model->id], ['class' => 'btn btn-secondary']); ?>
     </p>
 
     <?= DetailView::widget([
         'model' => $model,
         'attributes' => [
-            'task',
-            'created_at',
-            'is_done'
+            'name',
+            'description',
+            [
+                    'label' => 'Тип продукта',
+                    'value' => $model::TYPE_NAME
+            ]
         ],
     ]) ?>
 

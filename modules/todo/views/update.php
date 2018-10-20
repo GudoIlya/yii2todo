@@ -5,10 +5,10 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model app\modules\bills\models\Rates */
 
-$this->title = 'Обновление тудушки ' . $model->task;
+$this->title = 'Update Rates: ' . $model->name;
 $this->params['breadcrumbs'][] = ['label' => 'Rates', 'url' => ['index']];
-$this->params['breadcrumbs'][] = ['label' => $model->task, 'url' => ['view', 'id' => $model->id]];
-$this->params['breadcrumbs'][] = 'Обновление';
+$this->params['breadcrumbs'][] = ['label' => $model->name, 'url' => ['view', 'id' => $model->id]];
+$this->params['breadcrumbs'][] = 'Update';
 ?>
 <div class="rates-update">
 

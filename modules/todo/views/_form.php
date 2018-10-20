@@ -8,11 +8,18 @@ use yii\widgets\ActiveForm;
 /* @var $form yii\widgets\ActiveForm */
 ?>
 
-<div class="todos-form">
+<div class="rates-form">
 
     <?php $form = ActiveForm::begin(); ?>
 
-    <?= $form->field($model, 'task')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
+
+    <?= $form->field($model, 'description')->textarea(['maxlength' => true]) ?>
+
+    <?= $form->field($model, 'type')->dropDownList([
+        $model->getProductTypes()
+    ], ['prompt' => 'Выберите категорию продукта']) ?>
+
 
     <div class="form-group">
         <?= Html::submitButton('Сохранить', ['class' => 'btn btn-success']) ?>
