@@ -33,7 +33,7 @@ class Task extends ActiveRecord
     public $updated_at;
 
     public static function tableName() {
-        return 'todo.task';
+        return 'public.task';
     }
 
     public function behaviors()

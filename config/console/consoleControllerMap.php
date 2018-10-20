@@ -6,8 +6,8 @@ return [
         'migrationPath' => null,
         'migrationNamespaces' => [
             'app\migrations',
-            'vendor\dektrium\yii2-user\migrations',
-            'app\modules\catalog\migrations'
+            'app\modules\todo\migrations',
+            'dektrium\user\migrations\Migration'
         ]
     ],
     'migrate-app' => [
