@@ -20,6 +20,9 @@ return [
     'profile' => [
         'class' => 'app\modules\profile\Module'
     ],
+    'todo' => [
+        'class' => 'app\modules\todo\Module'
+    ],
     'catalog' => [
         'class' => 'app\modules\catalog\Module'
     ],

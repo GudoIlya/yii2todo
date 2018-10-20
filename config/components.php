@@ -1,6 +1,12 @@
 <?php
 
 return [
+    'urlManager' => [
+        'enablePrettyUrl' => true,
+        'showScriptName' => false,
+        'enableStrictParsing' => false,
+        'rules' => require_once __DIR__.'/rules.php'
+    ],
     'request' => [
         // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
         'cookieValidationKey' => 'LTkjdu7-olqyu3QS1V0CC7cIMdtmvj7e',

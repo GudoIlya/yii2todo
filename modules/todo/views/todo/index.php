@@ -24,10 +24,8 @@ $this->params['breadcrumbs'][] = $this->title;
         'filterModel' => $searchModel,
         'columns' => [
 
-            ['class' => 'yii\grid\SerialColumn'],
-
             'task',
-            'is_done',
+            'is_done:boolean',
             'created_at',
 
             ['class' => 'yii\grid\ActionColumn'],

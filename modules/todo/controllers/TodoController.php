@@ -6,6 +6,7 @@ use app\modules\todo\models\task\Task;
 use app\modules\todo\Searches\TaskSearch;
 use yii\filters\AccessControl;
 use yii\web\Controller;
+use yii\web\NotFoundHttpException;
 
 class TodoController extends Controller
 {
@@ -62,16 +63,16 @@ class TodoController extends Controller
     }
 
     /**
-     * Creates a new Resources model.
+     * Creates a new Task model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
     public function actionCreate()
     {
-        $model = new Jkhproduct();
+        $model = new Task();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+            return $this->redirect(['index']);
         }
 
         return $this->render('create', [
@@ -80,7 +81,7 @@ class TodoController extends Controller
     }
 
     /**
-     * Updates an existing Resources model.
+     * Updates an existing Task model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
      * @return mixed
@@ -91,7 +92,7 @@ class TodoController extends Controller
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+            return $this->redirect(['index']);
         }
 
         return $this->render('update', [

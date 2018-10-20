@@ -43,13 +43,14 @@ AppAsset::register($this);
                     ['label' => 'Все категории', 'url' => ['/catalog/category/index']],
                 ]
             ],
-            ['label' => 'Продукты жкх', 'url' => ['/profile/jkhproduct']],
+            ['label' => 'Todos', 'url' => ['/todo/todo']],
             ['label' => 'Профиль',
                 'items' => [
                         ['label' => 'Общая', 'url' => ['/profile']],
                         ['label' => 'Моя недвижимость', 'url' => ['/profile/estate']],
                         ['label' => 'Мои тарифы', 'url' => ['/profile/rate']],
-                        ['label' => 'Мои счета', 'url' => ['/profile/bill']]
+                        ['label' => 'Мои счета', 'url' => ['/profile/bill']],
+                        ['label' => 'Продукты жкх', 'url' => ['/profile/jkhproduct']]
                 ]
             ],
             ( isset(Yii::$app->user->identity) ? (['label' => 'Tasks', 'url' => ['/task/index']]) : '' ),

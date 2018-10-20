@@ -7,30 +7,12 @@ use yii\db\ActiveRecord;
 
 class Task extends ActiveRecord
 {
-    /**
-     * @var string
-     */
-    public $task;
-
-    /**
-     * @var bool
-     */
-    public $is_done;
-
-    /**
-     * @var integer
-     */
-    public $user_id;
-
-    /**
-     * @var date
-     */
-    public $created_at;
-
-    /**
-     * @var
-     */
-    public $updated_at;
+    /*
+    * @property int $id
+    * @property string $task
+    * @property bool $is_done
+     * @property int $user_id
+    */
 
     public static function tableName() {
         return 'public.task';
@@ -40,10 +22,10 @@ class Task extends ActiveRecord
     {
         return [
             [
-                'class' => BlameableBehavior::class,
+                'class' => BlameableBehavior::className(),
                 'createdByAttribute' => 'user_id',
                 'updatedByAttribute' => false,
-                'attribute' => [
+                'attributes' => [
                     ActiveRecord::EVENT_BEFORE_VALIDATE => ['user_id']
                 ]
             ]
@@ -53,10 +35,10 @@ class Task extends ActiveRecord
     public function rules()
     {
         return [
-            [['name'], 'required'],
-            [['name'], 'string', 'max' => 150],
-            [['created_at', 'updated_at'], 'safe'],
-            [['user_id'], 'exists', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']]
+            [['task'], 'required'],
+            [['task'], 'string', 'max' => 300],
+            [['created_at', 'updated_at', 'is_done'], 'safe'],
+            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']]
         ];
     }
 

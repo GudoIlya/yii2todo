@@ -22,7 +22,8 @@ class M181020183248InitMigration extends Migration
             'task' => $this->string(300)->notNull(),
             'created_at' => $this->date()->notNull()->defaultValue(new Expression('now()')),
             'updated_at' => $this->date()->null()->defaultValue(null),
-            'user_id' => $this->integer()->notNull()
+            'user_id' => $this->integer()->notNull(),
+            'is_done' => $this->boolean()->defaultValue(false)
         ]);
 
         $this->addForeignKey('fk-task-user-id',
