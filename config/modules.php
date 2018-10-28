@@ -30,4 +30,7 @@ return [
         'class' => 'app\modules\yandexapi\Module',
         'token' => 'c084076f-85f1-4f82-b595-0fd390342587'
     ],
+    'api' => [
+        'class' => 'app\modules\api\Module'
+    ]
 ];

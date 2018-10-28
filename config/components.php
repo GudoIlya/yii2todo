@@ -10,6 +10,9 @@ return [
     'request' => [
         // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
         'cookieValidationKey' => 'LTkjdu7-olqyu3QS1V0CC7cIMdtmvj7e',
+        'parsers' => [
+            'application/json' => 'yii\web\JsonParser'
+        ]
     ],
     'cache' => [
         'class' => 'yii\caching\FileCache',
@@ -51,12 +54,13 @@ return [
             'class' => 'yii\rbac\DbManager'
         ]
     ]
-    /*
+    */
     'urlManager' => [
         'enablePrettyUrl' => true,
+        'enableStrictParsing' => true,
         'showScriptName' => false,
         'rules' => [
+            ['class' => 'yii\rest\UrlRule', 'controller' => 'task']
         ],
     ],
-    */
 ];
